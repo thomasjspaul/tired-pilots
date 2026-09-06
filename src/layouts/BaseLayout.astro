@@ -39,7 +39,21 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/logo.png', Astro.site).href} />
     <meta name="twitter:card" content="summary" />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: siteName,
+        url: Astro.site!.href,
+        description:
+          "A plain-language guide to Canada's flight-crew fatigue rules (CARs Subpart 700).",
+      })}
+    />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/logo.png" type="image/png" sizes="any" />

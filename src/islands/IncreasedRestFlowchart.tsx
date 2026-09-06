@@ -59,7 +59,7 @@ export default function IncreasedRestFlowchart() {
   };
 
   return (
-    <div class="irf" data-pagefind-ignore>
+    <div class="irf" data-pagefind-ignore aria-live="polite">
       {trail.length > 0 && (
         <ol class="irf__trail">
           {trail.map((t, i) => (

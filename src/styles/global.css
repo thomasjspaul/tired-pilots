@@ -466,3 +466,55 @@ table {
   font-size: var(--text-xs);
   color: var(--ink-faint);
 }
+
+/* ---- print ---- */
+@media print {
+  .site-header,
+  .site-footer,
+  .dgate,
+  .skip-link,
+  .suggest,
+  .reg__foot,
+  .fdpc,
+  .irf,
+  [data-pagefind-ui] {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  .prose,
+  .reg,
+  .explainer {
+    max-width: none;
+  }
+  .table-scroll,
+  .dtable__scroll {
+    overflow: visible;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  table,
+  .reg__history,
+  figure {
+    break-inside: avoid;
+  }
+  /* Keep the "What changed in 2018" note in print; leave the verbatim
+     regulation-text expander collapsed unless the reader opened it. */
+  .reg__history[open] > *:not(summary),
+  .reg__history {
+    display: block !important;
+  }
+}
