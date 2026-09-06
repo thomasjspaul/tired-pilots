@@ -1,5 +1,81 @@
 ---
-import Stub from '../components/Stub.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FdpCalculator from '../islands/FdpCalculator.tsx';
 ---
 
-<Stub title="FDP calculator" stage="Stage 3" />
+<BaseLayout
+  title="FDP calculator"
+  description="Work out the maximum flight duty period for a 703/704/705 operation under CARs 700.28, with the augmented-crew (700.60) and split-duty (700.50) adjustments. Shows which table and rule it used."
+>
+  <div class="container calc-page">
+    <header class="calc-page__head">
+      <p class="calc-page__eyebrow">CARs 700.28 · 703 / 704 / 705</p>
+      <h1>Maximum Flight Duty Period calculator</h1>
+      <p class="calc-page__lede">
+        Enter your report time, the number of flights and their average length, and your crew setup.
+        The result shows the maximum FDP and exactly which table row and rule produced it.
+      </p>
+    </header>
+
+    <FdpCalculator client:load />
+
+    <section class="calc-page__notes prose">
+      <h2>What it covers</h2>
+      <ul>
+        <li>The 700.28(2)/(3)/(4) duration tables and the 700.28(9) day-VFR table.</li>
+        <li>
+          Acclimatization — if you're not acclimatized, it reads the table using the local time in
+          the zone you're still acclimatized to (700.28(5); AC 700-047 § 4.22).
+        </li>
+        <li>The 700.60 augmented-crew table (replaces the base maximum).</li>
+        <li>The 700.50 split-duty extension: (break − 45 min) × 100% or 50%.</li>
+        <li>The absolute 18-hour ceiling (700.62(1)).</li>
+      </ul>
+      <h2>What it doesn't</h2>
+      <ul>
+        <li>
+          Positioning (<a href="/rules/700-43">700.43</a>), delayed reporting time (<a
+            href="/rules/700-52">700.52</a
+          >), consecutive-FDP limits (<a href="/rules/700-51">700.51</a>).
+        </li>
+        <li>
+          The <a href="/rules/700-40">rest period</a> that follows, or the disruptive-schedule / time-zone
+          rest add-ons (<a href="/rules/700-41">700.41</a>,
+          <a href="/rules/700-42">700.42</a>).
+        </li>
+        <li>
+          Unforeseen operational circumstance extensions — those are the pilot-in-command's call (<a
+            href="/rules/700-63">700.63</a
+          >).
+        </li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .calc-page {
+    padding-block: 2.25rem 1rem;
+    max-width: 44rem;
+  }
+  .calc-page__eyebrow {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    margin: 0 0 0.35rem;
+  }
+  .calc-page__head h1 {
+    margin: 0 0 0.5rem;
+  }
+  .calc-page__lede {
+    color: var(--ink-soft);
+    font-size: var(--text-lg);
+    margin: 0 0 1.5rem;
+  }
+  .calc-page__notes {
+    margin-top: 2.5rem;
+    font-size: var(--text-sm);
+  }
+</style>

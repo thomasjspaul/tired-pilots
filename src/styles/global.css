@@ -210,3 +210,160 @@ table {
   white-space: nowrap;
   border: 0;
 }
+
+/* ---- FDP calculator island (src/islands/FdpCalculator.tsx) ---- */
+.fdpc {
+  font-family: var(--font-ui);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--bg-raised);
+}
+.fdpc__form {
+  padding: 1.1rem 1.15rem 1.25rem;
+  display: grid;
+  gap: 0.9rem;
+}
+.fdpc__grid {
+  display: grid;
+  gap: 0.9rem;
+}
+@media (min-width: 30rem) {
+  .fdpc__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.fdpc__field {
+  display: grid;
+  gap: 0.3rem;
+  font-size: var(--text-sm);
+}
+.fdpc__field > span {
+  color: var(--ink-soft);
+}
+.fdpc__field--indent {
+  margin-left: 1.6rem;
+}
+.fdpc input[type='time'],
+.fdpc input[type='number'],
+.fdpc select {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  width: 100%;
+}
+.fdpc__fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem 0.7rem;
+  margin: 0;
+}
+.fdpc__fieldset legend {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  padding: 0 0.35rem;
+}
+.fdpc__radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+.fdpc__radio,
+.fdpc__check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-sm);
+}
+.fdpc__check {
+  color: var(--ink);
+}
+.fdpc__out {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 1.1rem 1.15rem 1.25rem;
+}
+.fdpc__result {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-lg);
+  color: var(--ink-soft);
+}
+.fdpc__result strong {
+  font-size: var(--text-3xl);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin-left: 0.4rem;
+}
+.fdpc__working {
+  margin: 0.5rem 0;
+}
+.fdpc__working summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+.fdpc__working ol {
+  margin: 0.6rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+.fdpc__working li {
+  font-size: var(--text-sm);
+}
+.fdpc__step-label {
+  font-weight: 600;
+}
+.fdpc__step-value {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin-left: 0.4rem;
+}
+.fdpc__step-detail {
+  display: block;
+  color: var(--ink-soft);
+  margin-top: 0.1rem;
+}
+.fdpc__step-cite {
+  display: block;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  margin-top: 0.1rem;
+}
+.fdpc__warnings {
+  margin-top: 0.9rem;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-ink);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+  font-size: var(--text-sm);
+}
+.fdpc__warnings-h {
+  margin: 0 0 0.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--text-xs);
+}
+.fdpc__warnings ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+}
+.fdpc__error {
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+.fdpc__disclaimer {
+  margin: 0.9rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
