@@ -1,6 +1,11 @@
 ---
 import Disclaimer from './Disclaimer.astro';
+import regVersions from '../data/reg-versions.json';
 const year = new Date().getFullYear();
+const carsCurrentTo = new Date(regVersions.cars.currentTo + 'T00:00:00Z').toLocaleDateString(
+  'en-CA',
+  { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' },
+);
 ---
 
 <footer class="site-footer">
@@ -20,11 +25,12 @@ const year = new Date().getFullYear();
       <a href="/glossary">Glossary</a>
       <a href="/changes">The 2018 changes</a>
       <a href="/changelog">Changelog</a>
+      <a href="/privacy">Privacy</a>
       <a href="/legal">Disclaimer &amp; legal</a>
     </nav>
 
     <p class="site-footer__meta">
-      Content licensed
+      Regulation text current to <strong>{carsCurrentTo}</strong>. Content licensed
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a
       >. Not affiliated with Transport Canada or any air operator. &copy; {year}.
     </p>

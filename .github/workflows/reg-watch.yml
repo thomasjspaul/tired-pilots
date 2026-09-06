@@ -1,0 +1,24 @@
+name: Regulation watch
+
+# Weekly check: has the CARs (SOR/96-433) or Advisory Circular 700-047 changed
+# since the version recorded in src/data/reg-versions.json? If so this job
+# fails, and GitHub emails the repo owner. Review the affected pages, then run
+# `node ./scripts/check-reg-versions.mjs --update` and commit.
+
+on:
+  schedule:
+    - cron: '0 13 * * 1' # Mondays 13:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node ./scripts/check-reg-versions.mjs

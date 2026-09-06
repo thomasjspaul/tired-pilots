@@ -1,0 +1,16 @@
+{
+  "_comment": "Recorded state of the sources this site is built from. scripts/check-reg-versions.mjs compares the live sources against these values weekly (.github/workflows/reg-watch.yml) and fails — emailing the maintainer — if anything changed. After reviewing the affected pages, run `node ./scripts/check-reg-versions.mjs --update` and commit.",
+  "checkedOn": "2026-01-15",
+  "cars": {
+    "sor": "SOR/96-433",
+    "url": "https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html",
+    "currentTo": "2026-06-21",
+    "lastAmendedOn": "2026-06-17"
+  },
+  "ac700047": {
+    "title": "AC 700-047 — Flight Crew Member Fatigue Management (Prescriptive)",
+    "url": "https://tc.canada.ca/en/aviation/reference-centre/advisory-circulars/advisory-circular-ac-no-700-047",
+    "issue": "05",
+    "effectiveDate": "2024-06-28"
+  }
+}
