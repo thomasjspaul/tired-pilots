@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SkipLink from '../components/SkipLink.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import DisclaimerGate from '../components/DisclaimerGate.astro';
 
 interface Props {
   title: string;
@@ -63,5 +64,6 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
       <slot />
     </main>
     <Footer />
+    <DisclaimerGate />
   </body>
 </html>

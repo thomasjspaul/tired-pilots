@@ -1,0 +1,95 @@
+---
+/**
+ * One-time disclaimer acknowledgement. Shown on a visitor's first visit as a
+ * non-blocking bar at the bottom of the page; once acknowledged it never shows
+ * again (per browser). The disclaimer also lives permanently in the footer, so
+ * a visitor with JavaScript disabled still sees it there.
+ */
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'site');
+const text =
+  settings?.data.disclaimer ??
+  'This site is an educational aid, not legal advice. It can contain errors and may be out of date. Always verify against the current Canadian Aviation Regulations and your company Operations Manual.';
+---
+
+<div id="disclaimer-gate" class="dgate" hidden role="region" aria-label="Disclaimer">
+  <div class="dgate__inner">
+    <p class="dgate__text">
+      <strong>Before you use this site.</strong>
+      {text}
+      <a href="/legal">More</a>.
+    </p>
+    <button type="button" id="disclaimer-gate-ack" class="dgate__btn">I understand</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'tp-disclaimer-ack-v1';
+    var el = document.getElementById('disclaimer-gate');
+    if (!el) return;
+    var acked = false;
+    try {
+      acked = localStorage.getItem(KEY) === '1';
+    } catch (e) {
+      /* storage blocked — show it, dismissal just won't persist */
+    }
+    if (!acked) el.hidden = false;
+    var btn = document.getElementById('disclaimer-gate-ack');
+    if (btn)
+      btn.addEventListener('click', function () {
+        el.hidden = true;
+        try {
+          localStorage.setItem(KEY, '1');
+        } catch (e) {}
+      });
+  })();
+</script>
+
+<style>
+  .dgate {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 50;
+    background: var(--ink);
+    color: var(--bg);
+    border-top: 3px solid var(--brand-red);
+  }
+  .dgate__inner {
+    max-width: var(--wide-max);
+    margin-inline: auto;
+    padding: 0.85rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    flex-wrap: wrap;
+  }
+  .dgate__text {
+    margin: 0;
+    flex: 1 1 20rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+  .dgate__text a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .dgate__btn {
+    flex: none;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--bg);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .dgate__btn:hover {
+    background: transparent;
+    color: var(--bg);
+  }
+</style>

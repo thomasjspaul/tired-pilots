@@ -5,7 +5,6 @@
  * 2018" expander, and the review / correction footer.
  */
 import type { CollectionEntry } from 'astro:content';
-import Disclaimer from './Disclaimer.astro';
 import CitationBadge from './CitationBadge.astro';
 import AppliesToBadge from './AppliesToBadge.astro';
 import LastReviewed from './LastReviewed.astro';
@@ -55,8 +54,6 @@ const hasHistory = changed.length > 0 || oldText.length > 0;
     </div>
     <AppliesToBadge subpart={d.subpart} effectiveDate={d.effectiveDate} />
   </header>
-
-  <Disclaimer variant="inline" />
 
   <div class="reg__body prose">
     <slot />
