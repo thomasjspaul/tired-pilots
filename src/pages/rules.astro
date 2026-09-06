@@ -78,10 +78,30 @@ const bySection = new Map(regs.map((e) => [e.data.section, e]));
       }
     </ul>
 
+    <h2 class="rules__subhead">Other operations</h2>
     <p class="rules__note">
-      Looking for the medevac, 702 aerial-work or Fatigue Risk Management System (exemptions) rules?
-      Those are being migrated as secondary reference pages.
+      These use their own fatigue regimes — not the 703/704/705 rules above.
     </p>
+    <ul class="rules__list">
+      <li class="rules__item">
+        <a href="/medevac">
+          <span class="rules__title">Medevac</span>
+          <span class="rules__section">CARs 700.100–700.135</span>
+        </a>
+      </li>
+      <li class="rules__item">
+        <a href="/702-aerial-work">
+          <span class="rules__title">702 aerial work</span>
+          <span class="rules__section">CARs 702.91–702.98</span>
+        </a>
+      </li>
+      <li class="rules__item">
+        <a href="/frms-exemptions">
+          <span class="rules__title">Fatigue Risk Management System exemptions</span>
+          <span class="rules__section">CARs 700.200–700.259</span>
+        </a>
+      </li>
+    </ul>
   </div>
 </BaseLayout>
 
@@ -127,6 +147,9 @@ const bySection = new Map(regs.map((e) => [e.data.section, e]));
   }
   .rules__item--soon .rules__pending {
     color: var(--ink-faint);
+  }
+  .rules__subhead {
+    margin-top: 2.5rem;
   }
   .rules__note {
     font-size: var(--text-sm);

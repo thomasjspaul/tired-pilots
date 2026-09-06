@@ -9,11 +9,11 @@
 
   { "from": "/changes-to-cars/part-vii-changes/interpretation", "to": "/glossary", "status": 301 },
   { "from": "/changes-to-cars/part-vii-changes/703-704-705", "to": "/rules", "status": 301 },
-  { "from": "/changes-to-cars/part-vii-changes/702", "to": "/rules", "status": 301 },
-  { "from": "/changes-to-cars/part-vii-changes/medevac", "to": "/rules", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes/702", "to": "/702-aerial-work", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes/medevac", "to": "/medevac", "status": 301 },
   {
     "from": "/changes-to-cars/part-vii-changes/exemptions-fatigue-risk-management-system",
-    "to": "/rules",
+    "to": "/frms-exemptions",
     "status": 301
   },
   {
@@ -59,7 +59,7 @@
   },
   {
     "from": "/changes-to-cars/part-vii-changes/augmented-crew-medical-evacuation-flights",
-    "to": "/rules/700-60",
+    "to": "/medevac",
     "status": 301
   },
   {
