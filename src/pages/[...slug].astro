@@ -6,6 +6,7 @@ import SuggestCorrection from '../components/SuggestCorrection.astro';
 import DataTable from '../components/DataTable.astro';
 import FdpTables from '../components/FdpTables.astro';
 import AugmentedCrewTable from '../components/AugmentedCrewTable.astro';
+import RecentlyUpdated from '../components/RecentlyUpdated.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('pages', (e) => {
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const mdxComponents = { DataTable, FdpTables, AugmentedCrewTable };
+const mdxComponents = { DataTable, FdpTables, AugmentedCrewTable, RecentlyUpdated };
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>

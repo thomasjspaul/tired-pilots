@@ -1,0 +1,93 @@
+---
+/**
+ * The most recently reviewed pages, by their `lastReviewed` frontmatter date.
+ * Deterministic (no git dependency) and audience-relevant — the date each page
+ * was last checked against the CARs is what matters to a reader.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  limit?: number;
+}
+const { limit = 20 } = Astro.props;
+
+const isLive = (d: { draft?: boolean; lang?: string }) =>
+  d.lang === 'en' && (import.meta.env.PROD ? !d.draft : true);
+
+const regs = (await getCollection('regulations', (e) => isLive(e.data))).map((e) => ({
+  title: e.data.title,
+  href: `/rules/${e.data.slug ?? e.data.section.replace(/\./g, '-')}`,
+  kind: `CARs ${e.data.section}`,
+  date: e.data.lastReviewed,
+}));
+const explainers = (await getCollection('explainers', (e) => isLive(e.data))).map((e) => ({
+  title: e.data.question,
+  href: `/qa/${e.data.slug ?? e.id.replace(/^en\//, '')}`,
+  kind: 'Q&A',
+  date: e.data.lastReviewed,
+}));
+const pages = (await getCollection('pages', (e) => isLive(e.data)))
+  .filter((e) => e.data.slug !== 'changelog')
+  .map((e) => ({
+    title: e.data.title,
+    href: `/${e.data.slug}`,
+    kind: 'Page',
+    date: e.data.lastReviewed,
+  }));
+
+const rows = [...regs, ...explainers, ...pages]
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, limit);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<ul class="recent">
+  {
+    rows.map((r) => (
+      <li class="recent__item">
+        <a href={r.href}>
+          <span class="recent__title">{r.title}</span>
+          <span class="recent__meta">
+            {r.kind} · <time datetime={r.date.toISOString().slice(0, 10)}>{fmt(r.date)}</time>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .recent {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    font-family: var(--font-ui);
+  }
+  .recent__item {
+    border-bottom: 1px solid var(--border);
+  }
+  .recent__item a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .recent__item a:hover .recent__title {
+    color: var(--accent);
+  }
+  .recent__meta {
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+</style>
