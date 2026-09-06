@@ -73,6 +73,22 @@ const explainers = defineCollection({
   }),
 });
 
+/**
+ * Verbatim text of a CARs section, shown behind a "Regulation text" expander on
+ * the matching regulation page. Kept separate from the editorial `regulations`
+ * collection because it only changes when the law itself changes. The entry id
+ * (filename) matches the regulation's slug, e.g. `700-28`.
+ */
+const regulationText = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/regulation-text' }),
+  schema: z.object({
+    section: z.string(),
+    sourceUrl: z.string().url(),
+    retrievedOn: z.coerce.date(),
+    lang: z.enum(['en', 'fr']).default('en'),
+  }),
+});
+
 /** Standalone editorial pages: Home, About, Coming Into Force, Cheat Sheet, Changelog. */
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
@@ -112,4 +128,4 @@ const settings = defineCollection({
   }),
 });
 
-export const collections = { regulations, explainers, pages, settings };
+export const collections = { regulations, regulationText, explainers, pages, settings };

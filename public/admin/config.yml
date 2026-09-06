@@ -137,6 +137,39 @@ collections:
       - { name: draft, label: Draft (hidden from the live site), widget: boolean, default: true }
       - { name: body, label: Plain-language explanation + current in-force text, widget: markdown }
 
+  # ------------------------------------------------------------ regulation text
+  # Verbatim CARs section text shown behind the "Regulation text" expander.
+  # Rarely edited — only when the law itself changes. Filename must match the
+  # regulation's slug (e.g. 700-28).
+  - name: regulationText
+    label: Regulation text (verbatim)
+    label_singular: Regulation text
+    folder: src/content/regulation-text/en
+    create: true
+    extension: mdx
+    format: frontmatter
+    identifier_field: section
+    summary: 'CARs {{section}}'
+    fields:
+      - { name: section, label: CARs section, widget: string }
+      - {
+          name: sourceUrl,
+          label: Source URL (laws-lois.justice.gc.ca),
+          widget: string,
+        }
+      - {
+          name: retrievedOn,
+          label: Retrieved on,
+          widget: datetime,
+          date_format: 'YYYY-MM-DD',
+          time_format: false,
+        }
+      - {
+          name: body,
+          label: Verbatim section text (paste from Justice Laws; keep subsection numbers and tables),
+          widget: markdown,
+        }
+
   # ----------------------------------------------------------------- explainers
   - name: explainers
     label: Q&A explainers
@@ -168,15 +201,12 @@ collections:
         fields:
           - { name: label, widget: string }
           - { name: scenario, label: Scenario, widget: markdown }
-          - { name: expected, label: Expected answer (text), widget: string }
-          - {
-              name: expectedFdpHours,
-              label: Expected max FDP in hours (optional,
-              for the automated test),
-              widget: number,
-              required: false,
-              value_type: float,
-            }
+          - { name: expected, label: 'Expected answer (text)', widget: string }
+          - name: expectedFdpHours
+            label: 'Expected max FDP in hours (optional; used by the automated test)'
+            widget: number
+            required: false
+            value_type: float
           - { name: citation, widget: string }
       - {
           name: legacyPaths,

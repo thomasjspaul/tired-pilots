@@ -1,7 +1,8 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RegSection from '../../components/RegSection.astro';
+import CitationBadge from '../../components/CitationBadge.astro';
 import FdpTables from '../../components/FdpTables.astro';
 
 export async function getStaticPaths() {
@@ -17,7 +18,13 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const slug = entry.data.slug ?? entry.data.section.replace(/\./g, '-');
 const { Content } = await render(entry);
+
+// Optional verbatim legal text for the "Regulation text" expander.
+// The glob loader ids entries by path under the collection base, e.g. "en/700-28".
+const legalEntry = await getEntry('regulationText', `${entry.data.lang}/${slug}`);
+const Legal = legalEntry ? (await render(legalEntry)).Content : null;
 
 // Components made available to MDX bodies without an import.
 const mdxComponents = { FdpTables };
@@ -25,8 +32,27 @@ const mdxComponents = { FdpTables };
 
 <BaseLayout title={entry.data.title} description={entry.data.summary}>
   <div class="container reg-page">
-    <RegSection entry={entry}>
+    <RegSection entry={entry} hasFullText={!!Legal}>
       <Content components={mdxComponents} />
+      {
+        Legal && legalEntry && (
+          <Fragment slot="fulltext">
+            <p class="reg-page__source">
+              Reproduced from the consolidated <em>Canadian Aviation Regulations</em> (
+              {entry.data.sor}) on the Justice Laws website.
+              <CitationBadge
+                citation={{
+                  label: `CARs ${legalEntry.data.section}`,
+                  url: legalEntry.data.sourceUrl,
+                  retrievedOn: legalEntry.data.retrievedOn.toISOString().slice(0, 10),
+                }}
+                small
+              />
+            </p>
+            <Legal />
+          </Fragment>
+        )
+      }
     </RegSection>
   </div>
 </BaseLayout>
@@ -34,5 +60,13 @@ const mdxComponents = { FdpTables };
 <style>
   .reg-page {
     padding-block: 2.25rem 1rem;
+  }
+  .reg-page__source {
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
   }
 </style>

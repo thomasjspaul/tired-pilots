@@ -13,8 +13,10 @@ import { cars } from '../data/citations';
 
 interface Props {
   entry: CollectionEntry<'regulations'>;
+  /** Whether a "Regulation text" expander should be shown (fulltext slot filled). */
+  hasFullText?: boolean;
 }
-const { entry } = Astro.props;
+const { entry, hasFullText = false } = Astro.props;
 const d = entry.data;
 
 const mainCitation = {
@@ -58,6 +60,17 @@ const hasHistory = changed.length > 0 || oldText.length > 0;
   <div class="reg__body prose">
     <slot />
   </div>
+
+  {
+    hasFullText && (
+      <details class="reg__fulltext">
+        <summary>Regulation text — CARs {d.section}</summary>
+        <div class="reg__fulltext-inner prose">
+          <slot name="fulltext" />
+        </div>
+      </details>
+    )
+  }
 
   {
     hasHistory && (
@@ -179,6 +192,29 @@ const hasHistory = changed.length > 0 || oldText.length > 0;
     border-left: 3px solid var(--border-strong);
     color: var(--ink-soft);
     font-size: var(--text-sm);
+  }
+
+  .reg__fulltext {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .reg__fulltext > summary {
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .reg__fulltext[open] > summary {
+    border-bottom: 1px solid var(--border);
+  }
+  .reg__fulltext-inner {
+    padding: 0.25rem 1rem 1rem;
+    font-size: var(--text-sm);
+  }
+  .reg__fulltext-inner :global(table) {
+    font-size: var(--text-xs);
   }
   .reg__foot {
     margin-top: 2.5rem;

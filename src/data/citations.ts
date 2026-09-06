@@ -29,9 +29,29 @@ export function carsSectionUrl(section: string): string {
   return `https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/section-${section}.html`;
 }
 
-/** Advisory Circular 700-047 — "Flight Crew Fatigue Management". */
-export const AC_700_047_URL =
-  'https://tc.canada.ca/en/aviation/reference-centre/advisory-circulars/advisory-circular-ac-no-700-047';
+const AC_BASE =
+  'https://tc.canada.ca/en/aviation/reference-centre/advisory-circulars/advisory-circular-ac-no-';
+
+/**
+ * Advisory Circular 700-047 — "Flight Crew Fatigue Management". The guidance
+ * document for the PRESCRIPTIVE fatigue rules (CARs 700.19–700.72), including
+ * the acclimatization mechanic behind the 700.28 tables.
+ */
+export const AC_700_047_URL = `${AC_BASE}700-047`;
+
+/**
+ * Advisory Circular 700-046 — "Fatigue Risk Management System Requirements".
+ * Relevant to the FRMS pages only (CARs 700.200 series), not the prescriptive
+ * rules or the FDP calculator.
+ */
+export const AC_700_046_URL = `${AC_BASE}700-046`;
+
+/**
+ * Advisory Circular 700-045 — "Exemption and Safety Case Process for Fatigue
+ * Risk Management Systems". FRMS exemption process; relevant to the FRMS pages
+ * only.
+ */
+export const AC_700_045_URL = `${AC_BASE}700-045`;
 
 /** TP 14573 — "Fatigue Risk Management System for the Canadian Aviation Industry". */
 export const TP_14573_URL =
