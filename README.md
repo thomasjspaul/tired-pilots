@@ -1,4 +1,4 @@
-# TiredPilots.ca
+# tiredpilots.ca
 
 A plain-language guide to Canada's flight-crew fatigue rules (CARs Subpart 700),
 with a Maximum Flight Duty Period calculator for 703/704/705 operations.

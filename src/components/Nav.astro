@@ -21,9 +21,8 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
 <header class="site-header">
   <div class="container container--wide site-header__inner">
     <a class="wordmark" href="/">
-      <span class="wordmark__tired">Tired</span><span class="wordmark__pilots">Pilots</span><span
-        class="wordmark__tld">.ca</span
-      >
+      <img class="wordmark__mark" src="/logo.png" alt="" width="28" height="28" />
+      <span class="wordmark__name">tiredpilots<span class="wordmark__tld">.ca</span></span>
     </a>
 
     <nav class="nav" aria-label="Primary">
@@ -56,6 +55,9 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
   }
 
   .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-family: var(--font-ui);
     font-weight: 700;
     font-size: var(--text-lg);
@@ -64,12 +66,13 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     color: var(--ink);
     white-space: nowrap;
   }
-  .wordmark__pilots {
-    color: var(--accent);
+  .wordmark__mark {
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
   }
   .wordmark__tld {
-    color: var(--ink-faint);
-    font-weight: 600;
+    color: var(--brand-red);
   }
 
   .nav {

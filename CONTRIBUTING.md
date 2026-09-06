@@ -1,4 +1,4 @@
-# Editing TiredPilots.ca
+# Editing tiredpilots.ca
 
 This guide is for **editing the site's content**. You never need the command
 line, and you never edit files directly.

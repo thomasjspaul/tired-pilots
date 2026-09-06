@@ -7,15 +7,13 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title: string;
   description: string;
-  /** Override the design direction — only used by the Stage 1 style preview. */
-  theme?: 'a' | 'b' | 'c';
   /** Set on pages that should not be indexed (previews, 404). */
   noindex?: boolean;
 }
 
-const { title, description, theme, noindex = false } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 
-const siteName = 'TiredPilots.ca';
+const siteName = 'tiredpilots.ca';
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonical =
   new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '') || Astro.site!.href;
@@ -26,7 +24,7 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 ---
 
 <!doctype html>
-<html lang="en" data-theme={theme}>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,6 +41,8 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
     <meta name="twitter:card" content="summary" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/logo.png" type="image/png" sizes="any" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     {

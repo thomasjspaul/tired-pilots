@@ -47,7 +47,7 @@ Go to <https://github.com/settings/applications/new> and enter:
 
 | Field                      | Value                                                                |
 | -------------------------- | -------------------------------------------------------------------- |
-| Application name           | `TiredPilots.ca CMS`                                                 |
+| Application name           | `tiredpilots.ca CMS`                                                 |
 | Homepage URL               | `https://tiredpilots.ca`                                             |
 | Authorization callback URL | `https://tiredpilots-cms-auth.<your-subdomain>.workers.dev/callback` |
 

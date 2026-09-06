@@ -1,10 +1,13 @@
 /*
  * Design tokens for tiredpilots.ca.
  *
- * :root holds the DEFAULT direction (currently "C — Editorial handbook").
- * [data-theme="a|b|c"] blocks let the Stage 1 style-preview page show the
- * alternatives side by side. Once the owner picks one, keep that block's values
- * on :root and delete the rest.
+ * Direction: "Regulatory clean" — crisp, high-contrast, sans-serif, dense
+ * tables, separation by hairline borders rather than fills.
+ * Accent: Canada red (the brand is a red maple leaf with sleeping "z"s).
+ *
+ *  --brand-red  bright, for the logo / wordmark / large decorative use
+ *  --accent     slightly deepened red that meets WCAG AA on white for links,
+ *               buttons and UI text
  */
 
 :root {
@@ -14,121 +17,87 @@
   --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, Consolas, monospace;
 
-  --font-body: var(--font-serif);
+  --font-body: var(--font-sans);
   --font-ui: var(--font-sans);
   --font-heading: var(--font-sans);
 
   --text-xs: 0.78rem;
-  --text-sm: 0.88rem;
-  --text-base: 1.06rem;
-  --text-lg: 1.22rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 1.95rem;
-  --text-3xl: 2.55rem;
-  --leading: 1.65;
-  --measure: 68ch;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.19rem;
+  --text-xl: 1.45rem;
+  --text-2xl: 1.9rem;
+  --text-3xl: 2.5rem;
+  --leading: 1.6;
+  --measure: 72ch;
 
   /* ---- colour ---- */
-  --bg: #faf6ef;
-  --bg-raised: #fffdf8;
-  --bg-sunk: #f1e9dd;
-  --border: #e0d6c3;
-  --border-strong: #c8bca2;
+  --bg: #ffffff;
+  --bg-raised: #fbfcfd;
+  --bg-sunk: #f3f5f7;
+  --border: #d7dde3;
+  --border-strong: #b6c0c9;
 
-  --ink: #2a2620;
-  --ink-soft: #57503f;
-  --ink-faint: #857c67;
+  --ink: #14202b;
+  --ink-soft: #45535f;
+  --ink-faint: #6b7780;
 
-  --accent: #1f5c8b;
+  --brand-red: #e31b23;
+  --accent: #c8102e;
+  --accent-strong: #a50d26;
   --accent-ink: #ffffff;
-  --accent-soft: #e8f0f7;
+  --accent-soft: #fdecee;
 
   --warn-bg: #fdf3e3;
   --warn-border: #e8c583;
   --warn-ink: #7a5411;
 
-  --ok: #256b45;
-  --danger: #a03127;
+  --ok: #1c7a43;
+  --danger: #a50d26;
 
   /* ---- shape ---- */
-  --radius: 6px;
-  --radius-lg: 12px;
-  --shadow: 0 1px 2px rgba(40, 33, 20, 0.06), 0 4px 16px rgba(40, 33, 20, 0.06);
+  --radius: 4px;
+  --radius-lg: 8px;
+  --shadow: 0 1px 2px rgba(20, 32, 43, 0.08);
+  --shadow-lg: 0 1px 2px rgba(20, 32, 43, 0.08), 0 8px 24px rgba(20, 32, 43, 0.08);
   --focus: 0 0 0 3px var(--accent-soft), 0 0 0 5px var(--accent);
 
   /* ---- layout ---- */
   --space: 1rem;
   --page-max: 46rem;
   --wide-max: 68rem;
+
+  color-scheme: light;
 }
 
-/* Direction A — "Regulatory clean": crisp, high-contrast, sans UI + serif reg text, blue accent. */
-[data-theme='a'] {
-  --font-body: var(--font-sans);
-  --font-heading: var(--font-sans);
-  --bg: #ffffff;
-  --bg-raised: #ffffff;
-  --bg-sunk: #f4f6f8;
-  --border: #d7dde3;
-  --border-strong: #b6c0c9;
-  --ink: #14202b;
-  --ink-soft: #45535f;
-  --ink-faint: #6b7780;
-  --accent: #0b5fa5;
-  --accent-ink: #ffffff;
-  --accent-soft: #e4eef8;
-  --measure: 72ch;
-  --text-base: 1rem;
-  --radius: 4px;
-  --radius-lg: 8px;
-  --shadow: 0 1px 2px rgba(20, 32, 43, 0.08);
-}
-
-/* Direction B — "Instrument / EFB": dark, instrument-panel palette, mono accents. */
-[data-theme='b'] {
-  --font-body: var(--font-sans);
-  --font-heading: var(--font-sans);
-  --bg: #0f1418;
-  --bg-raised: #171f26;
-  --bg-sunk: #0a0e11;
-  --border: #2b363f;
-  --border-strong: #3f4d58;
-  --ink: #e8eef2;
-  --ink-soft: #a9b7c1;
-  --ink-faint: #74848f;
-  --accent: #4bb98a;
-  --accent-ink: #06120c;
-  --accent-soft: #16302453;
-  --warn-bg: #2a2113;
-  --warn-border: #6b5324;
-  --warn-ink: #e7b866;
-  --ok: #4bb98a;
-  --danger: #e0685c;
-  --radius: 4px;
-  --radius-lg: 8px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --focus: 0 0 0 3px rgba(75, 185, 138, 0.25), 0 0 0 5px var(--accent);
-}
-
-/* Direction C — "Editorial handbook": identical to the current default. */
-[data-theme='c'] {
-  /* inherits :root */
-}
-
-/* Dark mode for the default (C) direction. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    --bg: #17140f;
-    --bg-raised: #201b14;
-    --bg-sunk: #100d09;
-    --border: #38301f;
-    --border-strong: #4e442d;
-    --ink: #ece4d3;
-    --ink-soft: #bcb198;
-    --ink-faint: #8b8067;
-    --accent: #6fa8d0;
-    --accent-ink: #0a1620;
-    --accent-soft: #16283413;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  :root {
+    --bg: #0f171e;
+    --bg-raised: #16212b;
+    --bg-sunk: #0b1116;
+    --border: #263440;
+    --border-strong: #3a4b58;
+
+    --ink: #e6edf3;
+    --ink-soft: #aab7c2;
+    --ink-faint: #7c8a95;
+
+    --brand-red: #ff5a5f;
+    --accent: #ff6b6b;
+    --accent-strong: #ff8585;
+    --accent-ink: #1a0a0c;
+    --accent-soft: #2a1518;
+
+    --warn-bg: #2a2113;
+    --warn-border: #6b5324;
+    --warn-ink: #e7b866;
+
+    --ok: #4bb98a;
+    --danger: #ff8585;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45);
+
+    color-scheme: dark;
   }
 }

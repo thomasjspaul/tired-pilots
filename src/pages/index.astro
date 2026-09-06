@@ -23,12 +23,15 @@ const topics = [
 ---
 
 <BaseLayout
-  title="TiredPilots.ca"
+  title="tiredpilots.ca"
   description="A plain-language guide to Canada's flight-crew fatigue rules (CARs Subpart 700), with a Maximum Flight Duty Period calculator for 703/704/705 operations."
 >
   <section class="hero">
     <div class="container container--wide">
-      <p class="hero__kicker">Canadian flight-crew fatigue rules · CARs Subpart 700</p>
+      <p class="hero__kicker">
+        <img src="/logo.png" alt="" width="20" height="20" />
+        Canadian flight-crew fatigue rules · CARs Subpart 700
+      </p>
       <h1 class="hero__title">Work out your maximum Flight Duty Period</h1>
       <p class="hero__lede">
         Enter your report time, number of flights and crew setup. The calculator returns the maximum
@@ -100,12 +103,18 @@ const topics = [
     padding-block: 2.5rem 3rem;
   }
   .hero__kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-faint);
     margin: 0 0 0.4rem;
+  }
+  .hero__kicker img {
+    display: block;
   }
   .hero__title {
     margin: 0 0 0.5rem;
