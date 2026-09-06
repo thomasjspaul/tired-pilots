@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Regulation-logic + table-integrity tests. A red suite blocks the merge.
+      - run: npm test
+
+      # Type-check .astro / .ts.
+      - run: npm run check
+
+      # Full static build (also runs the Pagefind index step).
+      - run: npm run build

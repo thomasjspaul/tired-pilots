@@ -1,0 +1,67 @@
+---
+/**
+ * Site-wide legal disclaimer.
+ *
+ *  - variant="banner"  full-width strip for the footer (and the top of the home page)
+ *  - variant="inline"  compact note for the top of every regulation / explainer /
+ *                      calculator / flowchart page
+ *
+ * The text falls back to a constant but should be sourced from the `settings`
+ * collection (site.json -> disclaimer) once that content exists.
+ */
+interface Props {
+  variant?: 'banner' | 'inline';
+  text?: string;
+}
+
+const DEFAULT_TEXT =
+  'This site is an educational aid, not legal advice. It can contain errors and may be out of date. Always verify against the current Canadian Aviation Regulations and your company Operations Manual.';
+
+const { variant = 'inline', text = DEFAULT_TEXT } = Astro.props;
+---
+
+<aside class:list={['disclaimer', `disclaimer--${variant}`]} role="note" aria-label="Disclaimer">
+  <svg class="disclaimer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path
+      fill="currentColor"
+      d="M12 2 1 21h22L12 2Zm0 4.8 7.5 12.9h-15L12 6.8ZM11 10v5h2v-5h-2Zm0 6v2h2v-2h-2Z"></path>
+  </svg>
+  <p>{text}</p>
+</aside>
+
+<style>
+  .disclaimer {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    color: var(--warn-ink);
+    border-radius: var(--radius);
+    font-family: var(--font-ui);
+  }
+  .disclaimer p {
+    margin: 0;
+  }
+  .disclaimer__icon {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.12rem;
+  }
+  .disclaimer--inline {
+    padding: 0.7rem 0.85rem;
+    font-size: var(--text-sm);
+  }
+  .disclaimer--banner {
+    padding: 0.9rem 1.1rem;
+    font-size: var(--text-sm);
+    border-radius: 0;
+    border-inline: none;
+    justify-content: center;
+    text-align: left;
+  }
+  .disclaimer--banner p {
+    max-width: 60ch;
+  }
+</style>

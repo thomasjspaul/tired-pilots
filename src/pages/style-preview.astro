@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StyleSample from '../components/StyleSample.astro';
+
+/**
+ * Stage 1 deliverable: three design directions over identical sample content.
+ *
+ *  /style-preview            → all three stacked for comparison
+ *  /style-preview?theme=a    → direction A full-page
+ *  /style-preview?theme=b    → direction B full-page
+ *  /style-preview?theme=c    → direction C full-page
+ */
+const param = Astro.url.searchParams.get('theme');
+const single = param === 'a' || param === 'b' || param === 'c' ? (param as 'a' | 'b' | 'c') : null;
+const nextOf: Record<string, string> = { a: 'b', b: 'c', c: 'a' };
+
+const directions = [
+  {
+    id: 'a' as const,
+    name: 'A — Regulatory clean',
+    blurb:
+      'High-contrast, sans-serif UI, dense tables, one aviation-blue accent. Authoritative and fast.',
+  },
+  {
+    id: 'b' as const,
+    name: 'B — Instrument / EFB',
+    blurb:
+      'Dark, instrument-panel palette, mono accents. The calculator and flowchart feel like a cockpit tool.',
+  },
+  {
+    id: 'c' as const,
+    name: 'C — Editorial handbook',
+    blurb:
+      'Warm paper background, wide readable measure, generous whitespace. Best for long regulation prose.',
+  },
+];
+---
+
+<BaseLayout
+  title="Design directions"
+  description="Three visual directions for the tiredpilots.ca rebuild."
+  theme={single ?? undefined}
+  noindex
+>
+  <div class="container" style="padding-block: 2rem;">
+    {
+      single ? (
+        <>
+          <p class="preview-switch">
+            Direction {single.toUpperCase()} · <a href="/style-preview">compare all three</a> ·{' '}
+            <a href={`/style-preview?theme=${nextOf[single]}`}>next direction &rarr;</a>
+          </p>
+          <StyleSample />
+        </>
+      ) : (
+        <>
+          <h1>Design directions</h1>
+          <p style="max-width: 60ch;">
+            The same sample content — a regulation section, a lookup table, the calculator, a
+            decision step — rendered three ways. Open any one full-page with the link under its
+            heading, then tell me which to carry forward. Mixing is fine (for example, C for reading
+            with A's tables).
+          </p>
+
+          {directions.map((d) => (
+            <section class="direction">
+              <div class="direction__head">
+                <h2>{d.name}</h2>
+                <p>{d.blurb}</p>
+                <p>
+                  <a href={`/style-preview?theme=${d.id}`}>View full-page &rarr;</a>
+                </p>
+              </div>
+              <div class="direction__frame" data-theme={d.id}>
+                <StyleSample />
+              </div>
+            </section>
+          ))}
+        </>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .preview-switch {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin-bottom: 1.5rem;
+  }
+  .direction {
+    margin: 2.5rem 0;
+  }
+  .direction__head {
+    font-family: var(--font-ui);
+  }
+  .direction__head h2 {
+    margin-bottom: 0.25rem;
+  }
+  .direction__head p {
+    margin: 0.2rem 0;
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    max-width: 60ch;
+  }
+  .direction__frame {
+    margin-top: 1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+  }
+</style>

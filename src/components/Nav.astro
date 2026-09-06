@@ -1,0 +1,105 @@
+---
+/**
+ * Primary site header. Static link set for now; Stage 2 wires the "Rules"
+ * dropdown to the topic collection and Stage 4 adds search.
+ *
+ * No-JS: the five links simply wrap onto a second row on narrow screens.
+ */
+const { pathname } = Astro.url;
+
+const links = [
+  { label: 'Calculator', href: '/calculator' },
+  { label: 'Rules', href: '/rules' },
+  { label: 'Q&A', href: '/qa' },
+  { label: 'Cheat Sheet', href: '/cheat-sheet' },
+  { label: 'About', href: '/about' },
+];
+
+const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
+---
+
+<header class="site-header">
+  <div class="container container--wide site-header__inner">
+    <a class="wordmark" href="/">
+      <span class="wordmark__tired">Tired</span><span class="wordmark__pilots">Pilots</span><span
+        class="wordmark__tld">.ca</span
+      >
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      {
+        links.map((l) => (
+          <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-raised);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    flex-wrap: wrap;
+    padding-block: 0.6rem;
+  }
+
+  .wordmark {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: var(--text-lg);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .wordmark__pilots {
+    color: var(--accent);
+  }
+  .wordmark__tld {
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+  .nav a:hover {
+    background: var(--bg-sunk);
+    color: var(--ink);
+  }
+  .nav a[aria-current='page'] {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  @media (max-width: 30rem) {
+    .nav {
+      width: 100%;
+      justify-content: flex-start;
+      margin-inline: -0.6rem;
+    }
+  }
+</style>

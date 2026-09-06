@@ -1,0 +1,16 @@
+# Cloudflare Worker: GitHub OAuth broker for the Sveltia CMS admin.
+#
+# This is a SEPARATE deploy from the website. It is deployed once and rarely
+# touched. See ./README.md for the full walkthrough.
+
+name = "tiredpilots-cms-auth"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Non-secret var. Restrict which sites may use this broker.
+[vars]
+ALLOWED_DOMAINS = "tiredpilots.ca,*.tired-pilots.pages.dev"
+
+# Secrets are NOT stored here. Set them with:
+#   wrangler secret put GITHUB_CLIENT_ID
+#   wrangler secret put GITHUB_CLIENT_SECRET

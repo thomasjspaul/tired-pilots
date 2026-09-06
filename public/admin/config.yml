@@ -1,0 +1,231 @@
+# Sveltia CMS configuration (Decap-compatible).
+# Docs: https://github.com/sveltia/sveltia-cms  |  https://decapcms.org/docs/configuration-options/
+#
+# BEFORE GO-LIVE:
+#   1. set `backend.repo` to  <your-github-user>/tired-pilots
+#   2. set `backend.base_url` to the deployed OAuth worker URL (see /oauth/README.md)
+#   3. keep `local_backend: true` only while testing on your own machine
+
+backend:
+  name: github
+  repo: OWNER/tired-pilots # <-- change to your GitHub "user/repo"
+  branch: main
+  base_url: https://tiredpilots-cms-auth.example.workers.dev # <-- OAuth worker URL
+
+# Each "Publish" opens/updates a pull request and triggers a Cloudflare preview
+# build. Merge the PR (button in the CMS or on GitHub) to go live.
+publish_mode: editorial_workflow
+
+# Set to true ONLY for local testing with `npx @sveltia/cms-proxy-server`.
+local_backend: false
+
+media_folder: public/uploads
+public_folder: /uploads
+
+site_url: https://tiredpilots.ca
+display_url: https://tiredpilots.ca
+
+locale: en
+
+collections:
+  # ---------------------------------------------------------------- regulations
+  - name: regulations
+    label: Regulations
+    label_singular: Regulation
+    folder: src/content/regulations/en
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: '{{fields.section | replace(".", "-")}}'
+    identifier_field: section
+    summary: '{{section}} — {{title}}'
+    sortable_fields: [section, order, lastReviewed, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - {
+          name: section,
+          label: CARs section (e.g. 700.28),
+          widget: string,
+          pattern: ['^\d{3}(\.\d+)?$', 'Use a CARs number like 700.28'],
+        }
+      - { name: sor, label: Enabling SOR, widget: string, default: 'SOR/96-433' }
+      - {
+          name: part,
+          label: CARs Part,
+          widget: select,
+          options: ['I', 'VI', 'VII'],
+          default: 'VII',
+        }
+      - {
+          name: subpart,
+          label: Applies to,
+          widget: select,
+          required: false,
+          options: ['703/704/705', 'Medevac', 'FRMS', 'Interpretation', '702'],
+        }
+      - { name: order, label: Sort order, widget: number, value_type: int, default: 0 }
+      - {
+          name: summary,
+          label: Plain-language summary (one sentence — used for search & previews),
+          widget: text,
+        }
+      - {
+          name: lawUrl,
+          label: laws-lois.justice.gc.ca link to this section,
+          widget: string,
+          pattern:
+            ['^https://laws-lois\.justice\.gc\.ca/', 'Must be a laws-lois.justice.gc.ca URL'],
+        }
+      - {
+          name: retrievedOn,
+          label: Regulation text retrieved on,
+          widget: datetime,
+          date_format: 'YYYY-MM-DD',
+          time_format: false,
+          picker_utc: true,
+        }
+      - {
+          name: acUrl,
+          label: Advisory Circular 700-047 link (optional),
+          widget: string,
+          required: false,
+        }
+      - {
+          name: effectiveDate,
+          label: Fatigue-amendment effective date (optional),
+          widget: datetime,
+          date_format: 'YYYY-MM-DD',
+          time_format: false,
+          required: false,
+        }
+      - {
+          name: changesExplained,
+          label: 'Changes Explained (short paraphrase of AC 700-047)',
+          widget: markdown,
+          required: false,
+        }
+      - { name: hasOldVersion, label: Has a pre-2018 version?, widget: boolean, default: false }
+      - {
+          name: oldText,
+          label: Pre-2018 wording (shown behind an expander),
+          widget: markdown,
+          required: false,
+        }
+      - {
+          name: dataModule,
+          label: Attach a data-driven table,
+          widget: select,
+          required: false,
+          options: ['', 'fdp', 'augmentedCrew', 'medevac', 'oldVsNew'],
+        }
+      - { name: relatedCalculator, widget: select, options: ['none', 'fdp'], default: 'none' }
+      - {
+          name: legacyPaths,
+          label: Old Google Sites paths that should redirect here,
+          widget: list,
+          required: false,
+          field: { name: path, widget: string },
+        }
+      - {
+          name: lastReviewed,
+          label: Last reviewed (bump this whenever you verify the page against the CARs),
+          widget: datetime,
+          date_format: 'YYYY-MM-DD',
+          time_format: false,
+        }
+      - { name: reviewedBy, label: Reviewed by, widget: string, default: 'tiredpilots.ca' }
+      - { name: draft, label: Draft (hidden from the live site), widget: boolean, default: true }
+      - { name: body, label: Plain-language explanation + current in-force text, widget: markdown }
+
+  # ----------------------------------------------------------------- explainers
+  - name: explainers
+    label: Q&A explainers
+    label_singular: Explainer
+    folder: src/content/explainers/en
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: '{{slug}}'
+    summary: '{{question}}'
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: question, label: The question (as a reader would ask it), widget: string }
+      - { name: summary, label: Short answer / summary, widget: text }
+      - { name: order, label: Sort order, widget: number, value_type: int, default: 0 }
+      - {
+          name: lawRefs,
+          label: Relevant CARs references,
+          widget: list,
+          required: false,
+          field: { name: ref, widget: string },
+        }
+      - { name: relatedCalculator, widget: select, options: ['none', 'fdp'], default: 'none' }
+      - name: workedExamples
+        label: Worked examples (also used as calculator tests)
+        widget: list
+        required: false
+        summary: '{{fields.label}}'
+        fields:
+          - { name: label, widget: string }
+          - { name: scenario, label: Scenario, widget: markdown }
+          - { name: expected, label: Expected answer (text), widget: string }
+          - {
+              name: expectedFdpHours,
+              label: Expected max FDP in hours (optional,
+              for the automated test),
+              widget: number,
+              required: false,
+              value_type: float,
+            }
+          - { name: citation, widget: string }
+      - {
+          name: legacyPaths,
+          label: Old paths that should redirect here,
+          widget: list,
+          required: false,
+          field: { name: path, widget: string },
+        }
+      - { name: lastReviewed, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: reviewedBy, widget: string, default: 'tiredpilots.ca' }
+      - { name: draft, widget: boolean, default: true }
+      - { name: body, label: Full explanation, widget: markdown }
+
+  # ---------------------------------------------------------------------- pages
+  - name: pages
+    label: Editorial pages
+    label_singular: Page
+    folder: src/content/pages/en
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: '{{slug}}'
+    fields:
+      - { name: title, widget: string }
+      - { name: slug, label: URL path (e.g. "about"), widget: string }
+      - { name: description, label: Meta description, widget: text }
+      - { name: order, widget: number, value_type: int, default: 0 }
+      - { name: navGroup, widget: string, required: false }
+      - { name: showInNav, widget: boolean, default: false }
+      - { name: legacyPaths, widget: list, required: false, field: { name: path, widget: string } }
+      - { name: lastReviewed, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: reviewedBy, widget: string, default: 'tiredpilots.ca' }
+      - { name: draft, widget: boolean, default: true }
+      - { name: body, widget: markdown }
+
+  # ------------------------------------------------------------------- settings
+  - name: settings
+    label: Site settings
+    files:
+      - name: site
+        label: Site settings
+        file: src/content/settings/site.json
+        fields:
+          - { name: disclaimer, label: Site-wide disclaimer text, widget: text }
+          - { name: contactEmail, label: '"Suggest a correction" email address', widget: string }
+          - { name: defaultReviewer, widget: string, default: 'tiredpilots.ca' }
+          - name: nav
+            label: Header navigation
+            widget: list
+            fields:
+              - { name: label, widget: string }
+              - { name: href, widget: string }

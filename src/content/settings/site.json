@@ -1,0 +1,12 @@
+{
+  "disclaimer": "This site is an educational aid, not legal advice. It can contain errors and may be out of date. Always verify against the current Canadian Aviation Regulations and your company Operations Manual.",
+  "contactEmail": "corrections@tiredpilots.ca",
+  "defaultReviewer": "tiredpilots.ca",
+  "nav": [
+    { "label": "Calculator", "href": "/calculator" },
+    { "label": "Rules", "href": "/rules" },
+    { "label": "Q&A", "href": "/qa" },
+    { "label": "Cheat Sheet", "href": "/cheat-sheet" },
+    { "label": "About", "href": "/about" }
+  ]
+}

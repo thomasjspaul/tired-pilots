@@ -1,0 +1,67 @@
+---
+import Disclaimer from './Disclaimer.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <Disclaimer variant="banner" />
+
+  <div class="container container--wide site-footer__inner">
+    <p class="site-footer__brand">
+      <strong>TiredPilots.ca</strong> — a plain-language guide to Canada's flight-crew fatigue rules (CARs
+      Subpart 700).
+    </p>
+
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href="/rules">Rules</a>
+      <a href="/calculator">FDP calculator</a>
+      <a href="/qa">Q&amp;A</a>
+      <a href="/cheat-sheet">Cheat Sheet</a>
+      <a href="/changes">The 2018 changes</a>
+      <a href="/changelog">Changelog</a>
+      <a href="/legal">Disclaimer &amp; legal</a>
+    </nav>
+
+    <p class="site-footer__meta">
+      Content licensed
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a
+      >. Not affiliated with Transport Canada or any air operator. &copy; {year}.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-raised);
+  }
+  .site-footer__inner {
+    padding-block: 1.75rem 2.5rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+  .site-footer__brand {
+    max-width: 52ch;
+  }
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.1rem;
+    margin: 0.75rem 0 1rem;
+  }
+  .site-footer__links a {
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+  .site-footer__links a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .site-footer__meta {
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    margin: 0;
+  }
+</style>

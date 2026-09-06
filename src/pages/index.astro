@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Disclaimer from '../components/Disclaimer.astro';
+
+const topQuestions = [
+  { q: 'What does "acclimatized" mean and why does it matter?', href: '/qa/acclimatize' },
+  { q: 'How do split flight duty periods work?', href: '/qa/splits-explained' },
+  { q: 'What is a disruptive schedule?', href: '/qa/disruptive-schedule' },
+  {
+    q: 'Who has the authority to extend an FDP — the operator or the PIC?',
+    href: '/qa/pic-authority',
+  },
+];
+
+const topics = [
+  { label: 'Flight time limits', href: '/rules/700-27', note: '112 / 300 / 1000 hours' },
+  { label: 'Flight duty period', href: '/rules/700-28', note: 'CARs 700.28' },
+  { label: 'Rest periods', href: '/rules/700-40', note: 'CARs 700.40' },
+  { label: 'Split flight duty', href: '/rules/700-50', note: 'CARs 700.50' },
+  { label: 'Augmented crew', href: '/rules/700-60', note: 'CARs 700.60' },
+  { label: 'Disruptive schedules', href: '/rules/700-41', note: 'CARs 700.41' },
+];
+---
+
+<BaseLayout
+  title="TiredPilots.ca"
+  description="A plain-language guide to Canada's flight-crew fatigue rules (CARs Subpart 700), with a Maximum Flight Duty Period calculator for 703/704/705 operations."
+>
+  <section class="hero">
+    <div class="container container--wide">
+      <p class="hero__kicker">Canadian flight-crew fatigue rules · CARs Subpart 700</p>
+      <h1 class="hero__title">Work out your maximum Flight Duty Period</h1>
+      <p class="hero__lede">
+        Enter your report time, number of flights and crew setup. The calculator returns the maximum
+        FDP allowed under CARs 700.28 — and shows exactly which table and rule it used.
+      </p>
+
+      <div class="calc-shell" aria-hidden="true">
+        <div class="calc-shell__bar">FDP calculator</div>
+        <div class="calc-shell__body">
+          <span>Report time</span><span>Flights</span><span>Avg flight length</span>
+          <span>Acclimatized?</span><span>Augmented crew</span><span>Split duty</span>
+        </div>
+        <div class="calc-shell__result">Maximum FDP → <strong>coming in Stage 3</strong></div>
+      </div>
+      <p class="hero__cta">
+        <a class="btn" href="/calculator">Open the calculator</a>
+        <a class="btn btn--ghost" href="/rules">Browse the rules</a>
+      </p>
+
+      <Disclaimer variant="inline" />
+    </div>
+  </section>
+
+  <section class="container container--wide home-grid">
+    <div>
+      <h2>Common questions</h2>
+      <ul class="link-list">
+        {
+          topQuestions.map((item) => (
+            <li>
+              <a href={item.href}>{item.q}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a href="/qa">All questions &rarr;</a></p>
+    </div>
+
+    <div>
+      <h2>The rules by topic</h2>
+      <ul class="topic-list">
+        {
+          topics.map((t) => (
+            <li>
+              <a href={t.href}>
+                <span class="topic-list__label">{t.label}</span>
+                <span class="topic-list__note">{t.note}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a href="/rules">All topics &rarr;</a></p>
+    </div>
+  </section>
+
+  <section class="container container--wide">
+    <p class="note">
+      Rebuilt from the long-running Google Site. Focused on the rules <em>currently in force</em>;
+      the history of the 2018 changes lives in <a href="/changes">The 2018 changes</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--border);
+    padding-block: 2.5rem 3rem;
+  }
+  .hero__kicker {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 0.4rem;
+  }
+  .hero__title {
+    margin: 0 0 0.5rem;
+    max-width: 18ch;
+  }
+  .hero__lede {
+    max-width: 54ch;
+    color: var(--ink-soft);
+    font-size: var(--text-lg);
+  }
+
+  .calc-shell {
+    margin: 1.5rem 0 1.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    max-width: 40rem;
+    box-shadow: var(--shadow);
+    background: var(--bg);
+  }
+  .calc-shell__bar {
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+  }
+  .calc-shell__body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.85rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  .calc-shell__body span {
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 0.55rem 0.5rem;
+    color: var(--ink-faint);
+  }
+  .calc-shell__result {
+    border-top: 1px solid var(--border);
+    padding: 0.7rem 0.85rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+
+  .hero__cta {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .btn {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: 1px solid var(--accent);
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--accent);
+  }
+
+  .home-grid {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 44rem) {
+    .home-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  .link-list,
+  .topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    font-family: var(--font-ui);
+  }
+  .link-list li {
+    margin: 0.15rem 0;
+  }
+  .link-list a {
+    display: block;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .link-list a:hover {
+    color: var(--accent);
+  }
+
+  .topic-list a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .topic-list__note {
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+  .topic-list a:hover .topic-list__label {
+    color: var(--accent);
+  }
+
+  .note {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    background: var(--bg-sunk);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    margin-top: 2rem;
+  }
+</style>

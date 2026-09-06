@@ -1,0 +1,6 @@
+# The broker source is fetched with `npx degit sveltia/sveltia-cms-auth/src src`
+# (see README). It is not vendored here so it stays on the maintained upstream.
+src/
+.wrangler/
+node_modules/
+.dev.vars
