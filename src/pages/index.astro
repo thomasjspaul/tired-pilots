@@ -13,12 +13,12 @@ const topQuestions = [
 ];
 
 const topics = [
-  { label: 'Flight time limits', href: '/rules/700-27', note: '112 / 300 / 1000 hours' },
   { label: 'Flight duty period', href: '/rules/700-28', note: 'CARs 700.28' },
-  { label: 'Rest periods', href: '/rules/700-40', note: 'CARs 700.40' },
-  { label: 'Split flight duty', href: '/rules/700-50', note: 'CARs 700.50' },
-  { label: 'Augmented crew', href: '/rules/700-60', note: 'CARs 700.60' },
-  { label: 'Disruptive schedules', href: '/rules/700-41', note: 'CARs 700.41' },
+  { label: 'Flight time limits', href: '/rules', note: '112 / 300 / 1000 hours' },
+  { label: 'Rest periods', href: '/rules', note: 'CARs 700.40' },
+  { label: 'Split flight duty', href: '/rules', note: 'CARs 700.50' },
+  { label: 'Augmented crew', href: '/rules', note: 'CARs 700.60' },
+  { label: 'Disruptive schedules', href: '/rules', note: 'CARs 700.41' },
 ];
 ---
 
@@ -48,6 +48,15 @@ const topics = [
       </div>
       <p class="hero__cta">
         <a class="btn" href="/calculator">Open the calculator</a>
+        <a class="btn btn--dark" href="/cheat-sheet">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13ZM8 13h8v2H8v-2Zm0 4h8v2H8v-2Z"
+            ></path>
+          </svg>
+          Cheat Sheet
+        </a>
         <a class="btn btn--ghost" href="/rules">Browse the rules</a>
       </p>
 
@@ -172,7 +181,9 @@ const topics = [
     margin-bottom: 1.25rem;
   }
   .btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-family: var(--font-ui);
     font-weight: 600;
     font-size: var(--text-sm);
@@ -182,6 +193,19 @@ const topics = [
     background: var(--accent);
     color: var(--accent-ink);
     border: 1px solid var(--accent);
+  }
+  .btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .btn--dark {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .btn--dark:hover {
+    background: var(--ink-soft);
+    border-color: var(--ink-soft);
   }
   .btn--ghost {
     background: transparent;

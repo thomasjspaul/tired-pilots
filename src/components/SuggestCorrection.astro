@@ -1,0 +1,66 @@
+---
+/**
+ * A per-page "found a mistake?" link. Opens the reader's mail client with the
+ * page and a short template pre-filled. No form, no backend.
+ */
+import { getEntry } from 'astro:content';
+
+interface Props {
+  pageTitle: string;
+}
+const { pageTitle } = Astro.props;
+
+const settings = await getEntry('settings', 'site');
+const email = settings?.data.contactEmail ?? 'corrections@tiredpilots.ca';
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const subject = `[tiredpilots.ca] Correction: ${pageTitle}`;
+const body = [
+  `Page: ${pageUrl}`,
+  '',
+  'What looks wrong:',
+  '',
+  'Suggested fix:',
+  '',
+  'Source (CARs section, AC, etc.):',
+  '',
+].join('\n');
+
+const href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+---
+
+<p class="suggest">
+  <a href={href}>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"
+      ></path>
+    </svg>
+    Spotted a mistake or something out of date? Suggest a correction
+  </a>
+</p>
+
+<style>
+  .suggest {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+  .suggest a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .suggest a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .suggest svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+  }
+</style>

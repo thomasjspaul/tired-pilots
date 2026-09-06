@@ -1,0 +1,74 @@
+---
+/**
+ * A pill that links to the authoritative source (usually the consolidated CARs
+ * on the Justice Laws website) and records the date the text was verified.
+ */
+import type { Citation } from '../data/citations';
+
+interface Props {
+  citation: Citation;
+  /** Compact variant for use inline in body text / table captions. */
+  small?: boolean;
+}
+
+const { citation, small = false } = Astro.props;
+const dateLabel = new Date(citation.retrievedOn + 'T00:00:00Z').toLocaleDateString('en-CA', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<a
+  class:list={['citation', { 'citation--small': small }]}
+  href={citation.url}
+  target="_blank"
+  rel="noopener"
+>
+  <svg class="citation__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path
+      fill="currentColor"
+      d="M14 3v2h3.59l-9.3 9.29 1.42 1.42L19 6.41V10h2V3h-7ZM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5Z"
+    ></path>
+  </svg>
+  <span class="citation__label">{citation.label}</span>
+  <span class="citation__meta">verified {dateLabel}</span>
+</a>
+
+<style>
+  .citation {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    line-height: 1.3;
+    text-decoration: none;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    white-space: nowrap;
+  }
+  .citation:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .citation__icon {
+    width: 0.85rem;
+    height: 0.85rem;
+    flex: none;
+  }
+  .citation__meta {
+    color: inherit;
+    opacity: 0.75;
+  }
+  .citation--small {
+    padding: 0.05rem 0.5rem;
+  }
+  .citation--small .citation__meta {
+    display: none;
+  }
+</style>

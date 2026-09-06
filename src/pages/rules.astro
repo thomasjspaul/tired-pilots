@@ -1,5 +1,126 @@
 ---
-import Stub from '../components/Stub.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const regs = (
+  await getCollection('regulations', (e) => {
+    if (e.data.lang !== 'en') return false;
+    return import.meta.env.PROD ? !e.data.draft : true;
+  })
+).sort((a, b) => a.data.order - b.data.order || a.data.section.localeCompare(b.data.section));
+
+const slugOf = (e: (typeof regs)[number]) => e.data.slug ?? e.data.section.replace(/\./g, '-');
+
+// The intended topic order for the migrated site. Sections not yet migrated are
+// shown greyed out so the shape of the resource is visible from day one.
+const roadmap: { section: string; title: string }[] = [
+  { section: '700.27', title: 'Flight time limits' },
+  { section: '700.28', title: 'Maximum Flight Duty Period' },
+  { section: '700.29', title: 'Maximum hours of work' },
+  { section: '700.40', title: 'Rest periods' },
+  { section: '700.41', title: 'Disruptive schedules' },
+  { section: '700.42', title: 'Time zones' },
+  { section: '700.50', title: 'Split flight duty' },
+  { section: '700.60', title: 'Augmented crew & rest facilities' },
+  { section: '700.63', title: 'Unforeseen operational circumstances' },
+  { section: '700.70', title: 'Reserve' },
+  { section: '700.71', title: 'Standby' },
+  { section: '700.72', title: 'Controlled rest on the flight deck' },
+];
+
+const bySection = new Map(regs.map((e) => [e.data.section, e]));
 ---
 
-<Stub title="The rules by topic" stage="Stage 2" />
+<BaseLayout
+  title="The rules by topic"
+  description="Canada's flight-crew fatigue rules for 703/704/705 operations (CARs Subpart 700), explained topic by topic."
+>
+  <div class="container rules">
+    <h1>The rules by topic</h1>
+    <p class="rules__lede">
+      The flight-crew fatigue rules for 703, 704 and 705 operations, from the Canadian Aviation
+      Regulations Subpart 700. Being migrated from the old site — links become active as each topic
+      is checked against the current CARs.
+    </p>
+
+    <ul class="rules__list">
+      {
+        roadmap.map((item) => {
+          const entry = bySection.get(item.section);
+          return (
+            <li class:list={['rules__item', { 'rules__item--soon': !entry }]}>
+              {entry ? (
+                <a href={`/rules/${slugOf(entry)}`}>
+                  <span class="rules__title">{entry.data.title}</span>
+                  <span class="rules__section">CARs {entry.data.section}</span>
+                </a>
+              ) : (
+                <span class="rules__pending">
+                  <span class="rules__title">{item.title}</span>
+                  <span class="rules__section">CARs {item.section} · soon</span>
+                </span>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="rules__note">
+      Looking for the medevac, 702 aerial-work or Fatigue Risk Management System (exemptions) rules?
+      Those are being migrated as secondary reference pages.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .rules {
+    padding-block: 2.25rem 1rem;
+    max-width: var(--measure);
+  }
+  .rules__lede {
+    color: var(--ink-soft);
+  }
+  .rules__list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    font-family: var(--font-ui);
+  }
+  .rules__item {
+    border-bottom: 1px solid var(--border);
+  }
+  .rules__item a,
+  .rules__pending {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    text-decoration: none;
+  }
+  .rules__item a {
+    color: var(--ink);
+  }
+  .rules__item a:hover .rules__title {
+    color: var(--accent);
+  }
+  .rules__title {
+    font-weight: 600;
+  }
+  .rules__section {
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .rules__item--soon .rules__pending {
+    color: var(--ink-faint);
+  }
+  .rules__note {
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    background: var(--bg-sunk);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+  }
+</style>

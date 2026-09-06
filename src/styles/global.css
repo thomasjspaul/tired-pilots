@@ -87,6 +87,38 @@ hr {
   margin: 2rem 0;
 }
 
+blockquote {
+  margin: 1.25rem 0;
+  padding: 0.1rem 0 0.1rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+/* Prose blockquote used as a callout: leading **Note** / **Important** line. */
+.prose blockquote {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: 5rem;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+}
+.prose li {
+  margin: 0.3rem 0;
+}
+.prose li::marker {
+  color: var(--ink-faint);
+}
+
 img {
   max-width: 100%;
   height: auto;

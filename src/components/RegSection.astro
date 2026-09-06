@@ -1,0 +1,193 @@
+---
+/**
+ * The shell for a single regulation page: heading + citation + "applies to",
+ * a disclaimer, the plain-language body (slotted), an optional "what changed in
+ * 2018" expander, and the review / correction footer.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Disclaimer from './Disclaimer.astro';
+import CitationBadge from './CitationBadge.astro';
+import AppliesToBadge from './AppliesToBadge.astro';
+import LastReviewed from './LastReviewed.astro';
+import SuggestCorrection from './SuggestCorrection.astro';
+import { cars } from '../data/citations';
+
+interface Props {
+  entry: CollectionEntry<'regulations'>;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+
+const mainCitation = {
+  ...cars(d.section),
+  url: d.lawUrl,
+  retrievedOn: d.retrievedOn.toISOString().slice(0, 10),
+};
+
+// Frontmatter markdown fields render as simple paragraphs (blank line = new
+// paragraph). Rich formatting in these fields is a later refinement.
+const toParagraphs = (s?: string) =>
+  (s ?? '')
+    .trim()
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/\s*\n\s*/g, ' ').trim())
+    .filter(Boolean);
+
+const changed = toParagraphs(d.changesExplained);
+const oldText = toParagraphs(d.oldText);
+const hasHistory = changed.length > 0 || oldText.length > 0;
+---
+
+<article class="reg">
+  <header class="reg__head">
+    <p class="reg__eyebrow">Canadian Aviation Regulations · {d.sor}</p>
+    <h1>{d.title}</h1>
+    <p class="reg__summary">{d.summary}</p>
+    <div class="reg__badges">
+      <CitationBadge citation={mainCitation} />
+      {
+        d.acUrl && (
+          <a class="reg__ac" href={d.acUrl} target="_blank" rel="noopener">
+            Advisory Circular 700-047
+          </a>
+        )
+      }
+    </div>
+    <AppliesToBadge subpart={d.subpart} effectiveDate={d.effectiveDate} />
+  </header>
+
+  <Disclaimer variant="inline" />
+
+  <div class="reg__body prose">
+    <slot />
+  </div>
+
+  {
+    hasHistory && (
+      <details class="reg__history">
+        <summary>What changed in 2018</summary>
+        <div class="reg__history-inner">
+          {changed.length > 0 && (
+            <div>
+              <h3>In plain language</h3>
+              {changed.map((p) => (
+                <p>{p}</p>
+              ))}
+              {d.acUrl && (
+                <p class="reg__history-src">
+                  Paraphrased from{' '}
+                  <a href={d.acUrl} target="_blank" rel="noopener">
+                    Advisory Circular 700-047
+                  </a>
+                  .
+                </p>
+              )}
+            </div>
+          )}
+          {oldText.length > 0 && (
+            <div>
+              <h3>Previous wording (before 12 December 2018)</h3>
+              <blockquote>
+                {oldText.map((p) => (
+                  <p>{p}</p>
+                ))}
+              </blockquote>
+            </div>
+          )}
+        </div>
+      </details>
+    )
+  }
+
+  <footer class="reg__foot">
+    <LastReviewed date={d.lastReviewed} by={d.reviewedBy} />
+    <SuggestCorrection pageTitle={d.title} />
+  </footer>
+</article>
+
+<style>
+  .reg {
+    max-width: var(--measure);
+  }
+  .reg__eyebrow {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    margin: 0 0 0.35rem;
+  }
+  .reg h1 {
+    margin: 0 0 0.4rem;
+  }
+  .reg__summary {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    margin: 0 0 0.85rem;
+  }
+  .reg__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .reg__ac {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-soft);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    text-decoration: none;
+  }
+  .reg__ac:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .reg__body {
+    margin-top: 1.5rem;
+  }
+  .reg__history {
+    margin: 2rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+  }
+  .reg__history > summary {
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .reg__history[open] > summary {
+    border-bottom: 1px solid var(--border);
+  }
+  .reg__history-inner {
+    padding: 0.5rem 1rem 1rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .reg__history-inner h3 {
+    font-size: var(--text-base);
+    margin: 0.75rem 0 0.35rem;
+  }
+  .reg__history-src {
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .reg__history blockquote {
+    margin: 0;
+    padding-left: 0.9rem;
+    border-left: 3px solid var(--border-strong);
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+  }
+  .reg__foot {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 0.5rem;
+  }
+</style>

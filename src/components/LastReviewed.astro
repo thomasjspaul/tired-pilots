@@ -1,0 +1,28 @@
+---
+interface Props {
+  date: Date | string;
+  by?: string;
+}
+const { date, by } = Astro.props;
+const d = new Date(typeof date === 'string' ? date : date.toISOString());
+const iso = d.toISOString().slice(0, 10);
+const label = d.toLocaleDateString('en-CA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<p class="last-reviewed">
+  Last reviewed <time datetime={iso}>{label}</time>{by ? ` · ${by}` : ''}
+</p>
+
+<style>
+  .last-reviewed {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    margin: 0;
+  }
+</style>

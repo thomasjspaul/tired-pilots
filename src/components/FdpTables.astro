@@ -1,0 +1,155 @@
+---
+/**
+ * The four CARs 700.28 maximum-FDP lookup tables, rendered from src/data/fdp.ts
+ * (the same data the calculator uses). Replaces the flat JPGs from the old site.
+ */
+import {
+  DAY_VFR_CITATION,
+  DAY_VFR_FDP,
+  DURATION_BUCKET_LABEL,
+  FDP_CITATION,
+  FDP_TABLE,
+  FLIGHT_BANDS,
+  START_BANDS,
+  hoursToHHMM,
+  type AvgDurationBucket,
+} from '../data/fdp';
+import CitationBadge from './CitationBadge.astro';
+
+const durationTables: AvgDurationBucket[] = ['lt30', '30to50', 'gte50'];
+const fmt = (h: number) => `${hoursToHHMM(h)}`;
+---
+
+<div class="fdp-tables">
+  {
+    durationTables.map((bucket) => (
+      <figure class="fdp-table">
+        <figcaption>
+          <span class="fdp-table__title">
+            Maximum flight duty period — average flight duration {DURATION_BUCKET_LABEL[bucket]}
+          </span>
+          <CitationBadge citation={FDP_CITATION[bucket]} small />
+        </figcaption>
+        <div class="fdp-table__scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Start time of flight duty period</th>
+                {FLIGHT_BANDS[bucket].map((fb) => (
+                  <th scope="col">{fb.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {START_BANDS.map((sb, r) => (
+                <tr>
+                  <th scope="row">{sb.label}</th>
+                  {FDP_TABLE[bucket][r].map((hrs) => (
+                    <td>{fmt(hrs)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </figure>
+    ))
+  }
+
+  <figure class="fdp-table">
+    <figcaption>
+      <span class="fdp-table__title">
+        Maximum flight duty period — flights conducted under day VFR
+      </span>
+      <CitationBadge citation={DAY_VFR_CITATION} small />
+    </figcaption>
+    <div class="fdp-table__scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Start time of flight duty period</th>
+            <th scope="col">Maximum flight duty period</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            START_BANDS.map((sb, r) => (
+              <tr>
+                <th scope="row">{sb.label}</th>
+                <td>{fmt(DAY_VFR_FDP[r])}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <p class="fdp-tables__note">
+    Times shown as <abbr title="hours:minutes">h:mm</abbr>. These tables assume an acclimatized
+    flight crew member — see <a href="#acclimatization">acclimatization</a> below if you are not acclimatized
+    to local time.
+  </p>
+</div>
+
+<style>
+  .fdp-tables {
+    margin: 1.5rem 0;
+  }
+  .fdp-table {
+    margin: 0 0 1.75rem;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .fdp-table__title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--ink);
+  }
+  .fdp-table__scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  th,
+  td {
+    padding: 0.45rem 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th {
+    background: var(--bg-sunk);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-strong);
+  }
+  tbody th[scope='row'] {
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--bg-raised);
+  }
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+  .fdp-tables__note {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+</style>

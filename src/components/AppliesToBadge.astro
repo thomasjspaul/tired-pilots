@@ -1,0 +1,63 @@
+---
+/**
+ * "Applies to" chips — which operation types a rule covers, and (optionally) when
+ * it came into force.
+ */
+interface Props {
+  /** e.g. "703/704/705", "Medevac", "702" */
+  subpart?: string;
+  effectiveDate?: Date | string;
+}
+
+const { subpart, effectiveDate } = Astro.props;
+
+const opTypes = subpart && /703|704|705/.test(subpart) ? ['703', '704', '705'] : null;
+
+const eff =
+  effectiveDate &&
+  new Date(
+    typeof effectiveDate === 'string' ? effectiveDate : effectiveDate.toISOString(),
+  ).toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<p class="applies-to">
+  <span class="applies-to__label">Applies to</span>
+  {
+    opTypes ? (
+      opTypes.map((t) => <span class="applies-to__chip">{t}</span>)
+    ) : (
+      <span class="applies-to__chip">{subpart ?? '703 / 704 / 705'}</span>
+    )
+  }
+  {eff && <span class="applies-to__eff">· in force since {eff}</span>}
+</p>
+
+<style>
+  .applies-to {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    margin: 0.5rem 0 0;
+  }
+  .applies-to__label {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .applies-to__chip {
+    color: var(--ink-soft);
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.05rem 0.45rem;
+    font-weight: 600;
+  }
+</style>

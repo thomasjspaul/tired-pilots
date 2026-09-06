@@ -1,0 +1,38 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RegSection from '../../components/RegSection.astro';
+import FdpTables from '../../components/FdpTables.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('regulations', (e) => {
+    if (e.data.lang !== 'en') return false;
+    return import.meta.env.PROD ? !e.data.draft : true;
+  });
+
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug ?? entry.data.section.replace(/\./g, '-') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Components made available to MDX bodies without an import.
+const mdxComponents = { FdpTables };
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.summary}>
+  <div class="container reg-page">
+    <RegSection entry={entry}>
+      <Content components={mdxComponents} />
+    </RegSection>
+  </div>
+</BaseLayout>
+
+<style>
+  .reg-page {
+    padding-block: 2.25rem 1rem;
+  }
+</style>
