@@ -9,7 +9,7 @@ compatibility_date = "2025-01-01"
 
 # Non-secret var. Restrict which sites may use this broker.
 [vars]
-ALLOWED_DOMAINS = "tiredpilots.ca,*.tired-pilots.pages.dev"
+ALLOWED_DOMAINS = "tiredpilots.ca,tired-pilots.pages.dev,*.tired-pilots.pages.dev"
 
 # Secrets are NOT stored here. Set them with:
 #   wrangler secret put GITHUB_CLIENT_ID
