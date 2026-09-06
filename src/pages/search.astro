@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Search from 'astro-pagefind/components/Search';
+import SemanticSearch from '../islands/SemanticSearch.tsx';
 
 const query = Astro.url.searchParams.get('q') ?? undefined;
 ---
@@ -13,15 +14,28 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
   <div class="container search-page">
     <h1>Search</h1>
     <p class="search-page__lede">
-      Searches the plain-language explanations, the Q&amp;A and the glossary. The verbatim
-      regulation text and the calculator aren't indexed — use the pages themselves for those.
+      Covers the plain-language explanations, the Q&amp;A and the glossary. The verbatim regulation
+      text and the calculator aren't indexed — use the pages themselves for those.
     </p>
 
-    <Search
-      id="search"
-      query={query}
-      uiOptions={{ showImages: false, showSubResults: true, pageSize: 8, excerptLength: 20 }}
-    />
+    <div class="search-tabs">
+      <input type="radio" name="mode" id="mode-keyword" class="search-tabs__radio" checked />
+      <label for="mode-keyword" class="search-tabs__label">Keyword</label>
+      <input type="radio" name="mode" id="mode-meaning" class="search-tabs__radio" />
+      <label for="mode-meaning" class="search-tabs__label">By meaning</label>
+
+      <div class="search-tabs__panel" data-mode="keyword">
+        <Search
+          id="search"
+          query={query}
+          uiOptions={{ showImages: false, showSubResults: true, pageSize: 8, excerptLength: 20 }}
+        />
+      </div>
+
+      <div class="search-tabs__panel" data-mode="meaning">
+        <SemanticSearch client:idle />
+      </div>
+    </div>
   </div>
 </BaseLayout>
 
@@ -53,6 +67,127 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
   .search-page__lede {
     color: var(--ink-soft);
     font-size: var(--text-sm);
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.25rem;
+  }
+
+  .search-tabs__radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .search-tabs__label {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .search-tabs__label:first-of-type {
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+  #mode-meaning + .search-tabs__label {
+    border-left: none;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  #mode-keyword:checked ~ label[for='mode-keyword'],
+  #mode-meaning:checked ~ label[for='mode-meaning'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  #mode-keyword:focus-visible ~ label[for='mode-keyword'],
+  #mode-meaning:focus-visible ~ label[for='mode-meaning'] {
+    box-shadow: var(--focus);
+  }
+
+  .search-tabs__panel {
+    margin-top: 1.25rem;
+  }
+  .search-tabs__panel[data-mode='meaning'] {
+    display: none;
+  }
+  #mode-keyword:checked ~ .search-tabs__panel[data-mode='meaning'] {
+    display: none;
+  }
+  #mode-keyword:checked ~ .search-tabs__panel[data-mode='keyword'] {
+    display: block;
+  }
+  #mode-meaning:checked ~ .search-tabs__panel[data-mode='keyword'] {
+    display: none;
+  }
+  #mode-meaning:checked ~ .search-tabs__panel[data-mode='meaning'] {
+    display: block;
+  }
+</style>
+
+<style is:global>
+  .semsearch__input {
+    width: 100%;
+    font: inherit;
+    font-family: var(--font-ui);
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .semsearch__msg {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin: 0.75rem 0 0;
+  }
+  .semsearch__results {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .semsearch__results li {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.7rem 0.85rem;
+  }
+  .semsearch__results a {
+    text-decoration: none;
+    display: block;
+  }
+  .semsearch__title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .semsearch__heading {
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+  .semsearch__excerpt {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin-top: 0.2rem;
+  }
+  .semsearch__score {
+    display: block;
+    height: 3px;
+    background: var(--bg-sunk);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+  .semsearch__score > span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+  .semsearch__note {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    margin: 0.75rem 0 0;
   }
 </style>
