@@ -1,5 +1,90 @@
 ---
-import Stub from '../components/Stub.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const explainers = (
+  await getCollection('explainers', (e) => {
+    if (e.data.lang !== 'en') return false;
+    return import.meta.env.PROD ? !e.data.draft : true;
+  })
+).sort((a, b) => a.data.order - b.data.order || a.data.question.localeCompare(b.data.question));
+
+const slugOf = (e: (typeof explainers)[number]) => e.data.slug ?? e.id.replace(/^en\//, '');
 ---
 
-<Stub title="Q&A" stage="Stage 2" />
+<BaseLayout
+  title="Q&A"
+  description="Plain-language answers to common questions about Canada's flight-crew fatigue rules — acclimatization, splits, disruptive schedules, PIC authority and more."
+>
+  <div class="container qa">
+    <h1>Q&amp;A</h1>
+    <p class="qa__lede">
+      Plain-language answers to the questions pilots actually ask about the fatigue rules. Each one
+      cites the CARs sections and Advisory Circular 700-047 it relies on.
+    </p>
+
+    {
+      explainers.length === 0 ? (
+        <p class="qa__empty">
+          Being migrated from the old site — answers appear here as they're checked.
+        </p>
+      ) : (
+        <ul class="qa__list">
+          {explainers.map((e) => (
+            <li>
+              <a href={`/qa/${slugOf(e)}`}>
+                <span class="qa__q">{e.data.question}</span>
+                <span class="qa__a">{e.data.summary}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .qa {
+    padding-block: 2.25rem 1rem;
+    max-width: var(--measure);
+  }
+  .qa__lede {
+    color: var(--ink-soft);
+  }
+  .qa__list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+  }
+  .qa__list li {
+    border-bottom: 1px solid var(--border);
+  }
+  .qa__list a {
+    display: block;
+    padding: 0.9rem 0;
+    text-decoration: none;
+  }
+  .qa__q {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .qa__a {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin-top: 0.15rem;
+  }
+  .qa__list a:hover .qa__q {
+    color: var(--accent);
+  }
+  .qa__empty {
+    font-family: var(--font-ui);
+    color: var(--ink-soft);
+    background: var(--bg-sunk);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+  }
+</style>

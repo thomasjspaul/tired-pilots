@@ -1,0 +1,189 @@
+---
+/**
+ * Shell for a Q&A explainer page: the question as the heading, a one-line
+ * answer, the body (slotted), a "worked examples" section built from
+ * frontmatter, related links, and the review / correction footer.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { getEntries } from 'astro:content';
+import LastReviewed from './LastReviewed.astro';
+import SuggestCorrection from './SuggestCorrection.astro';
+
+interface Props {
+  entry: CollectionEntry<'explainers'>;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+
+const related = d.relatedRegulations.length ? await getEntries(d.relatedRegulations) : [];
+const regHref = (r: CollectionEntry<'regulations'>) =>
+  `/rules/${r.data.slug ?? r.data.section.replace(/\./g, '-')}`;
+---
+
+<article class="explainer">
+  <header class="explainer__head">
+    <p class="explainer__eyebrow">Q&amp;A</p>
+    <h1>{d.question}</h1>
+    <p class="explainer__answer">{d.summary}</p>
+    {
+      d.lawRefs.length > 0 && (
+        <p class="explainer__refs">
+          Turns on:{' '}
+          {d.lawRefs.map((r, i) => (
+            <>
+              {i > 0 && ', '}
+              <span>CARs {r}</span>
+            </>
+          ))}
+        </p>
+      )
+    }
+  </header>
+
+  <div class="explainer__body prose">
+    <slot />
+  </div>
+
+  {
+    d.workedExamples.length > 0 && (
+      <section class="explainer__examples">
+        <h2>Worked examples</h2>
+        {d.workedExamples.map((ex) => (
+          <div class="wex">
+            <p class="wex__label">{ex.label}</p>
+            <p class="wex__scenario" set:html={ex.scenario} />
+            <p class="wex__result">
+              <span>→</span> {ex.expected}
+            </p>
+            <p class="wex__cite">{ex.citation}</p>
+          </div>
+        ))}
+        <p class="explainer__examples-note">
+          These examples are also run as automated checks against the FDP calculator.
+        </p>
+      </section>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <section class="explainer__related">
+        <h2>Related rules</h2>
+        <ul>
+          {related.map((r) => (
+            <li>
+              <a href={regHref(r)}>
+                {r.data.title} <span>(CARs {r.data.section})</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <footer class="explainer__foot">
+    <LastReviewed date={d.lastReviewed} by={d.reviewedBy} />
+    <SuggestCorrection pageTitle={d.title} />
+  </footer>
+</article>
+
+<style>
+  .explainer {
+    max-width: var(--measure);
+  }
+  .explainer__eyebrow {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    margin: 0 0 0.35rem;
+  }
+  .explainer h1 {
+    margin: 0 0 0.5rem;
+    text-wrap: pretty;
+  }
+  .explainer__answer {
+    font-size: var(--text-lg);
+    color: var(--ink-soft);
+    margin: 0 0 0.5rem;
+  }
+  .explainer__refs {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    margin: 0;
+  }
+  .explainer__body {
+    margin-top: 1.5rem;
+  }
+  .explainer__examples,
+  .explainer__related {
+    margin-top: 2rem;
+  }
+  .wex {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  .wex__label {
+    font-weight: 700;
+    margin: 0 0 0.35rem;
+  }
+  .wex__scenario {
+    margin: 0 0 0.4rem;
+    color: var(--ink-soft);
+  }
+  .wex__result {
+    margin: 0;
+    font-weight: 600;
+  }
+  .wex__result span {
+    color: var(--accent);
+  }
+  .wex__cite {
+    margin: 0.25rem 0 0;
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .explainer__examples-note {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+  .explainer__related ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    font-family: var(--font-ui);
+  }
+  .explainer__related li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .explainer__related a {
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .explainer__related a span {
+    color: var(--ink-faint);
+    font-weight: 400;
+    font-size: var(--text-xs);
+  }
+  .explainer__related a:hover {
+    color: var(--accent);
+  }
+  .explainer__foot {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 0.5rem;
+  }
+</style>

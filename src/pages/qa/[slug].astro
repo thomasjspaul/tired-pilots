@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Explainer from '../../components/Explainer.astro';
+import DataTable from '../../components/DataTable.astro';
+import FdpTables from '../../components/FdpTables.astro';
+import AugmentedCrewTable from '../../components/AugmentedCrewTable.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('explainers', (e) => {
+    if (e.data.lang !== 'en') return false;
+    return import.meta.env.PROD ? !e.data.draft : true;
+  });
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug ?? entry.id.replace(/^en\//, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const mdxComponents = { DataTable, FdpTables, AugmentedCrewTable };
+---
+
+<BaseLayout title={entry.data.question} description={entry.data.summary}>
+  <div class="container qa-page">
+    <Explainer entry={entry}>
+      <Content components={mdxComponents} />
+    </Explainer>
+  </div>
+</BaseLayout>
+
+<style>
+  .qa-page {
+    padding-block: 2.25rem 1rem;
+  }
+</style>
