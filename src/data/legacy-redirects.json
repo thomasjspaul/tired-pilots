@@ -1,0 +1,73 @@
+[
+  { "from": "/home", "to": "/", "status": 301 },
+
+  { "from": "/changes-to-cars", "to": "/changes", "status": 301 },
+  { "from": "/changes-to-cars/coming-into-force", "to": "/changes", "status": 301 },
+  { "from": "/changes-to-cars/part-i-changes", "to": "/changes", "status": 301 },
+  { "from": "/changes-to-cars/part-vi-changes", "to": "/changes", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes", "to": "/changes", "status": 301 },
+
+  { "from": "/changes-to-cars/part-vii-changes/interpretation", "to": "/glossary", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes/703-704-705", "to": "/rules", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes/702", "to": "/rules", "status": 301 },
+  { "from": "/changes-to-cars/part-vii-changes/medevac", "to": "/rules", "status": 301 },
+  {
+    "from": "/changes-to-cars/part-vii-changes/exemptions-fatigue-risk-management-system",
+    "to": "/rules",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/703-operations-training",
+    "to": "/rules/700-20",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/704-operations-training",
+    "to": "/rules/700-20",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/705-operations-training",
+    "to": "/rules/700-20",
+    "status": 301
+  },
+
+  {
+    "from": "/changes-to-cars/part-vii-changes/average-flights-30-minutes",
+    "to": "/rules/700-28#find-your-maximum-fdp",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/average-flights-30-50-minutes",
+    "to": "/rules/700-28#find-your-maximum-fdp",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/average-flights-50-minutes",
+    "to": "/rules/700-28#find-your-maximum-fdp",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/day-vfr",
+    "to": "/rules/700-28#find-your-maximum-fdp",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/augmented-crew",
+    "to": "/rules/700-60",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/augmented-crew-medical-evacuation-flights",
+    "to": "/rules/700-60",
+    "status": 301
+  },
+  {
+    "from": "/changes-to-cars/part-vii-changes/increased-rest-flow-chart",
+    "to": "/flowcharts/increased-rest",
+    "status": 301
+  },
+
+  { "from": "/qa/acclimatize-explained", "to": "/qa/acclimatize", "status": 301 },
+  { "from": "/qa/disruptive-schedule-explained", "to": "/qa/disruptive-schedule", "status": 301 }
+]
