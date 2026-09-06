@@ -46,6 +46,12 @@ export const DEFINITIONS: readonly Definition[] = [
     text: 'in respect of a person, means that their ability to act as a flight crew member of an aircraft is not impaired by fatigue, the consumption of alcohol or drugs or any mental or physical condition',
   },
   {
+    term: 'unforeseen operational circumstance',
+    section: '101.01',
+    text: 'an event, such as unforecast adverse weather, or an equipment malfunction or air traffic control delay, that is beyond the control of an air operator or private operator',
+    note: 'To be usable under section 700.63 it must occur within 60 minutes of the start of, or during, the flight duty period (AC 700-047 § 4.70).',
+  },
+  {
     term: 'positioning',
     section: '101.01',
     text: 'the transfer of a flight crew member from one location to another, at the request of an air operator, but does not include travel to or from suitable accommodation or the member’s lodging',
