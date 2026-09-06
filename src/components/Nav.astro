@@ -1,15 +1,15 @@
 ---
 /**
  * Primary site header.
- *  - Desktop (>= 46rem): all links shown inline.
- *  - Mobile: "Cheat Sheet" stays visible (it's the most-used page); the rest
- *    collapse into a <details> hamburger menu. No-JS friendly; a small inline
- *    script closes it on navigate / Escape / outside click.
+ *  - Desktop (>= 46rem): all links inline.
+ *  - Mobile: Search + Cheat Sheet stay visible; the rest collapse behind a
+ *    hamburger (a CSS checkbox toggle — works with no JS). A small script adds
+ *    aria-expanded and closes the menu on navigate / Escape / outside click.
  */
 const { pathname } = Astro.url;
 
-// Cheat Sheet is deliberately NOT in this list — it stays a visible link on its
-// own (mobile and desktop), never folded into the hamburger.
+// Search and Cheat Sheet are intentionally NOT here — they stay visible on their
+// own, never folded into the hamburger.
 const links = [
   { label: 'Calculator', href: '/calculator' },
   { label: 'Rules', href: '/rules' },
@@ -46,55 +46,78 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
         Cheat Sheet
       </a>
 
-      <details class="nav" id="nav-details">
-        <summary class="nav__toggle" aria-label="Menu">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="22" height="22">
-            <path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"></path>
-          </svg>
-          <svg
-            class="nav__toggle-close"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            focusable="false"
-            width="22"
-            height="22"
-          >
-            <path
-              fill="currentColor"
-              d="m18.3 5.7-1.4-1.4L12 9.2 7.1 4.3 5.7 5.7 10.6 10.6 5.7 15.5l1.4 1.4L12 12l4.9 4.9 1.4-1.4L13.4 10.6z"
-            ></path>
-          </svg>
-          <span class="nav__toggle-text">Menu</span>
-        </summary>
-        <nav class="nav__panel" aria-label="Primary">
-          {
-            links.map((l) => (
-              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
-                {l.label}
-              </a>
-            ))
-          }
-        </nav>
-      </details>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-cb" />
+      <label class="nav-toggle" for="nav-toggle" aria-label="Menu">
+        <svg
+          class="nav-toggle__open"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+          width="22"
+          height="22"
+          ><path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"></path></svg
+        >
+        <svg
+          class="nav-toggle__close"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+          width="22"
+          height="22"
+          ><path
+            fill="currentColor"
+            d="m18.3 5.7-1.4-1.4L12 9.2 7.1 4.3 5.7 5.7 10.6 10.6 5.7 15.5l1.4 1.4L12 12l4.9 4.9 1.4-1.4L13.4 10.6z"
+          ></path></svg
+        >
+      </label>
+
+      <nav class="nav" aria-label="Primary">
+        {
+          links.map((l) => (
+            <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+              {l.label}
+            </a>
+          ))
+        }
+      </nav>
     </div>
   </div>
 </header>
 
 <script is:inline>
   (function () {
-    var d = document.getElementById('nav-details');
-    if (!d) return;
-    var close = function () {
-      d.removeAttribute('open');
+    var cb = document.getElementById('nav-toggle');
+    var label = document.querySelector('.nav-toggle');
+    var nav = document.querySelector('.site-header .nav');
+    if (!cb || !label || !nav) return;
+    label.setAttribute('role', 'button');
+    label.setAttribute('tabindex', '0');
+    var sync = function () {
+      label.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
     };
-    d.querySelector('.nav__panel')?.addEventListener('click', function (e) {
+    sync();
+    cb.addEventListener('change', sync);
+    label.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cb.checked = !cb.checked;
+        sync();
+      }
+    });
+    var close = function () {
+      if (cb.checked) {
+        cb.checked = false;
+        sync();
+      }
+    };
+    nav.addEventListener('click', function (e) {
       if (e.target.tagName === 'A') close();
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') close();
     });
     document.addEventListener('click', function (e) {
-      if (d.hasAttribute('open') && !d.contains(e.target)) close();
+      if (cb.checked && !e.target.closest('.nav-area')) close();
     });
   })();
 </script>
@@ -139,7 +162,7 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
   .nav-area {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.15rem;
     font-family: var(--font-ui);
     font-size: var(--text-sm);
   }
@@ -172,85 +195,84 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     color: var(--accent);
   }
 
-  .nav__toggle {
+  .nav-toggle-cb {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .nav-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.4rem 0.55rem;
+    padding: 0.4rem 0.5rem;
     border-radius: var(--radius);
     color: var(--ink-soft);
     cursor: pointer;
-    list-style: none;
-    user-select: none;
   }
-  .nav__toggle::-webkit-details-marker {
-    display: none;
-  }
-  .nav__toggle:hover {
+  .nav-toggle:hover {
     background: var(--bg-sunk);
     color: var(--ink);
   }
-  .nav__toggle-close {
+  .nav-toggle__close {
     display: none;
   }
-  .nav[open] .nav__toggle svg:first-of-type {
+  .nav-toggle-cb:checked ~ .nav-toggle .nav-toggle__open {
     display: none;
   }
-  .nav[open] .nav__toggle-close {
+  .nav-toggle-cb:checked ~ .nav-toggle .nav-toggle__close {
     display: block;
   }
+  .nav-toggle-cb:focus-visible ~ .nav-toggle {
+    box-shadow: var(--focus);
+  }
 
-  .nav__panel {
+  .nav {
     display: flex;
-    flex-direction: column;
     gap: 0.1rem;
   }
-  .nav__panel a {
+  .nav a {
     text-decoration: none;
     color: var(--ink-soft);
-    padding: 0.6rem 0.7rem;
+    padding: 0.5rem 0.65rem;
     border-radius: var(--radius);
     white-space: nowrap;
   }
-  .nav__panel a:hover {
+  .nav a:hover {
     background: var(--bg-sunk);
     color: var(--ink);
   }
-  .nav__panel a[aria-current='page'] {
+  .nav a[aria-current='page'] {
     color: var(--accent);
     font-weight: 600;
   }
 
-  /* ---- mobile: dropdown panel ---- */
+  /* ---- mobile: collapse the nav behind the hamburger ---- */
   @media (max-width: 45.999rem) {
     .nav {
-      position: static;
-    }
-    .nav[open] .nav__panel {
+      display: none;
       position: absolute;
       left: 0;
       right: 0;
       top: 100%;
+      flex-direction: column;
       background: var(--bg-raised);
       border-bottom: 1px solid var(--border);
       box-shadow: var(--shadow-lg);
       padding: 0.5rem 1.15rem 1rem;
     }
+    .nav-toggle-cb:checked ~ .nav {
+      display: flex;
+    }
+    .nav a {
+      padding: 0.6rem 0.7rem;
+    }
   }
 
   /* ---- desktop: everything inline, no hamburger ---- */
   @media (min-width: 46rem) {
-    .nav {
-      display: contents;
-    }
-    .nav__toggle {
+    .nav-toggle {
       display: none;
-    }
-    .nav__panel {
-      display: flex !important;
-      flex-direction: row;
-      align-items: center;
-      gap: 0.1rem;
     }
   }
 </style>
