@@ -12,7 +12,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "prebuild": "node ./scripts/gen-redirects.mjs",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build",
     "postbuild": "node ./scripts/build-search-vectors.mjs || true",
     "preview": "astro preview",
     "astro": "astro",

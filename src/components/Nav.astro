@@ -29,6 +29,15 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     </a>
 
     <div class="nav-area">
+      <a class="nav-search" href="/search" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5 1.49-1.5-5-5Zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14Z"
+          ></path>
+        </svg>
+      </a>
+
       <a
         class="nav-cheatsheet"
         href="/cheat-sheet"
@@ -133,6 +142,18 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     gap: 0.25rem;
     font-family: var(--font-ui);
     font-size: var(--text-sm);
+  }
+
+  .nav-search {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius);
+    color: var(--ink-soft);
+  }
+  .nav-search:hover {
+    background: var(--bg-sunk);
+    color: var(--ink);
   }
 
   .nav-cheatsheet {

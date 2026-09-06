@@ -63,7 +63,7 @@ const hasHistory = changed.length > 0 || oldText.length > 0;
 
   {
     hasFullText && (
-      <details class="reg__fulltext">
+      <details class="reg__fulltext" data-pagefind-ignore>
         <summary>Regulation text — CARs {d.section}</summary>
         <div class="reg__fulltext-inner prose">
           <slot name="fulltext" />

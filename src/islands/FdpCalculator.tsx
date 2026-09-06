@@ -109,7 +109,7 @@ export default function FdpCalculator() {
   }, [s]);
 
   return (
-    <div class="fdpc">
+    <div class="fdpc" data-pagefind-ignore>
       <form class="fdpc__form" onSubmit={(e) => e.preventDefault()}>
         <div class="fdpc__grid">
           <label class="fdpc__field">

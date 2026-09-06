@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Search from 'astro-pagefind/components/Search';
+
+const query = Astro.url.searchParams.get('q') ?? undefined;
+---
+
+<BaseLayout
+  title="Search"
+  description="Search every rule page, Q&A explainer and glossary term on tiredpilots.ca."
+  noindex
+>
+  <div class="container search-page">
+    <h1>Search</h1>
+    <p class="search-page__lede">
+      Searches the plain-language explanations, the Q&amp;A and the glossary. The verbatim
+      regulation text and the calculator aren't indexed — use the pages themselves for those.
+    </p>
+
+    <Search
+      id="search"
+      query={query}
+      uiOptions={{ showImages: false, showSubResults: true, pageSize: 8, excerptLength: 20 }}
+    />
+  </div>
+</BaseLayout>
+
+<style is:global>
+  :root {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: var(--bg-raised);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--bg-sunk);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-font: var(--font-ui);
+  }
+  .search-page .pagefind-ui__result-link {
+    color: var(--accent);
+  }
+</style>
+
+<style>
+  .search-page {
+    padding-block: 2.25rem 2rem;
+    max-width: 42rem;
+  }
+  .search-page h1 {
+    margin: 0 0 0.5rem;
+  }
+  .search-page__lede {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    margin: 0 0 1.5rem;
+  }
+</style>
