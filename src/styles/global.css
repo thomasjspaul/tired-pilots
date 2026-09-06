@@ -119,6 +119,40 @@ blockquote {
   color: var(--ink-faint);
 }
 
+/* Markdown tables (rehype wraps each in .table-scroll). Component lookup tables
+   use <DataTable> and are styled there — keep the two visually aligned. */
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 1.25rem 0;
+}
+.prose .table-scroll {
+  font-family: var(--font-ui);
+}
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--text-sm);
+}
+.prose :is(th, td) {
+  padding: 0.45rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.prose thead th {
+  background: var(--bg-sunk);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-strong);
+  white-space: nowrap;
+}
+.prose tbody tr:last-child :is(th, td) {
+  border-bottom: none;
+}
+.prose td {
+  font-variant-numeric: tabular-nums;
+}
+
 img {
   max-width: 100%;
   height: auto;

@@ -11,6 +11,35 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 // URL; only the DNS cutover (Stage 4) makes this address live.
 const SITE = 'https://tiredpilots.ca';
 
+/**
+ * Wrap every Markdown/MDX <table> in <div class="table-scroll"> so wide tables
+ * scroll on small screens instead of overflowing the page. Component tables
+ * (DataTable / FdpTables) bring their own scroll container and are untouched.
+ */
+function rehypeWrapTables() {
+  /** @param {any} child */
+  const wrap = (child) => {
+    walk(child);
+    if (child.type === 'element' && child.tagName === 'table') {
+      return {
+        type: 'element',
+        tagName: 'div',
+        properties: { className: ['table-scroll'] },
+        children: [child],
+      };
+    }
+    return child;
+  };
+  /** @param {any} node */
+  const walk = (node) => {
+    if (Array.isArray(node.children)) node.children = node.children.map(wrap);
+  };
+  /** @param {any} tree */
+  return (tree) => {
+    walk(tree);
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
@@ -38,6 +67,7 @@ export default defineConfig({
           properties: { className: ['heading-anchor'] },
         },
       ],
+      rehypeWrapTables,
     ],
   },
 });

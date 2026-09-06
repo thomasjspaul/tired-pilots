@@ -1,0 +1,114 @@
+---
+/**
+ * The one lookup-table style used across the site: an optional title with a
+ * citation badge, a horizontally scrollable bordered container, shaded header
+ * row and (optionally) shaded first column.
+ *
+ * Used by <FdpTables> and available to MDX bodies as <DataTable>.
+ */
+import CitationBadge from './CitationBadge.astro';
+import type { Citation } from '../data/citations';
+
+interface Props {
+  title?: string;
+  citation?: Citation;
+  columns: string[];
+  rows: (string | number)[][];
+  /** Render the first cell of each row as a <th scope="row">. Default true. */
+  rowHeaders?: boolean;
+  /** Small print under the table. */
+  note?: string;
+}
+
+const { title, citation, columns, rows, rowHeaders = true, note } = Astro.props;
+---
+
+<figure class="dtable">
+  {
+    (title || citation) && (
+      <figcaption>
+        {title && <span class="dtable__title">{title}</span>}
+        {citation && <CitationBadge citation={citation} small />}
+      </figcaption>
+    )
+  }
+  <div class="dtable__scroll">
+    <table>
+      <thead>
+        <tr>
+          {columns.map((c) => <th scope="col">{c}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((r) => (
+            <tr>
+              {r.map((cell, i) =>
+                rowHeaders && i === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>,
+              )}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  {note && <p class="dtable__note">{note}</p>}
+</figure>
+
+<style>
+  .dtable {
+    margin: 1.25rem 0 1.5rem;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .dtable__title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--ink);
+  }
+  .dtable__scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .dtable table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  .dtable :is(th, td) {
+    padding: 0.45rem 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .dtable thead th {
+    background: var(--bg-sunk);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-strong);
+  }
+  .dtable tbody th[scope='row'] {
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--bg-raised);
+  }
+  .dtable tbody tr:last-child :is(th, td) {
+    border-bottom: none;
+  }
+  .dtable td {
+    font-variant-numeric: tabular-nums;
+  }
+  .dtable__note {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    margin: 0.4rem 0 0;
+  }
+</style>
