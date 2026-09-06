@@ -68,12 +68,13 @@ These are stored encrypted by Cloudflare. They are **never** committed to git.
 
 ### 5. Point the CMS at the broker
 
-In `public/admin/config.yml` set:
+In `public/admin/config.yml`, `backend.repo` is already
+`thomasjspaul/tired-pilots`. Set `base_url` to the Worker URL from step 2:
 
 ```yaml
 backend:
   name: github
-  repo: <your-github-user>/tired-pilots
+  repo: thomasjspaul/tired-pilots
   branch: main
   base_url: https://tiredpilots-cms-auth.<your-subdomain>.workers.dev
 ```

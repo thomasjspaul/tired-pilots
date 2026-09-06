@@ -8,9 +8,9 @@
 
 backend:
   name: github
-  repo: OWNER/tired-pilots # <-- change to your GitHub "user/repo"
+  repo: thomasjspaul/tired-pilots
   branch: main
-  base_url: https://tiredpilots-cms-auth.example.workers.dev # <-- OAuth worker URL
+  base_url: https://tiredpilots-cms-auth.example.workers.dev # <-- set to the OAuth worker URL (oauth/README.md)
 
 # Each "Publish" opens/updates a pull request and triggers a Cloudflare preview
 # build. Merge the PR (button in the CMS or on GitHub) to go live.
