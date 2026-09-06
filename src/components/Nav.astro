@@ -1,17 +1,19 @@
 ---
 /**
- * Primary site header. Static link set for now; Stage 2 wires the "Rules"
- * dropdown to the topic collection and Stage 4 adds search.
- *
- * No-JS: the five links simply wrap onto a second row on narrow screens.
+ * Primary site header.
+ *  - Desktop (>= 46rem): all links shown inline.
+ *  - Mobile: "Cheat Sheet" stays visible (it's the most-used page); the rest
+ *    collapse into a <details> hamburger menu. No-JS friendly; a small inline
+ *    script closes it on navigate / Escape / outside click.
  */
 const { pathname } = Astro.url;
 
+// Cheat Sheet is deliberately NOT in this list — it stays a visible link on its
+// own (mobile and desktop), never folded into the hamburger.
 const links = [
   { label: 'Calculator', href: '/calculator' },
   { label: 'Rules', href: '/rules' },
   { label: 'Q&A', href: '/qa' },
-  { label: 'Cheat Sheet', href: '/cheat-sheet' },
   { label: 'Glossary', href: '/glossary' },
   { label: 'About', href: '/about' },
 ];
@@ -26,17 +28,67 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
       <span class="wordmark__name">tiredpilots<span class="wordmark__tld">.ca</span></span>
     </a>
 
-    <nav class="nav" aria-label="Primary">
-      {
-        links.map((l) => (
-          <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
-            {l.label}
-          </a>
-        ))
-      }
-    </nav>
+    <div class="nav-area">
+      <a
+        class="nav-cheatsheet"
+        href="/cheat-sheet"
+        aria-current={isActive('/cheat-sheet') ? 'page' : undefined}
+      >
+        Cheat Sheet
+      </a>
+
+      <details class="nav" id="nav-details">
+        <summary class="nav__toggle" aria-label="Menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="22" height="22">
+            <path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"></path>
+          </svg>
+          <svg
+            class="nav__toggle-close"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            width="22"
+            height="22"
+          >
+            <path
+              fill="currentColor"
+              d="m18.3 5.7-1.4-1.4L12 9.2 7.1 4.3 5.7 5.7 10.6 10.6 5.7 15.5l1.4 1.4L12 12l4.9 4.9 1.4-1.4L13.4 10.6z"
+            ></path>
+          </svg>
+          <span class="nav__toggle-text">Menu</span>
+        </summary>
+        <nav class="nav__panel" aria-label="Primary">
+          {
+            links.map((l) => (
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+    </div>
   </div>
 </header>
+
+<script is:inline>
+  (function () {
+    var d = document.getElementById('nav-details');
+    if (!d) return;
+    var close = function () {
+      d.removeAttribute('open');
+    };
+    d.querySelector('.nav__panel')?.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+    document.addEventListener('click', function (e) {
+      if (d.hasAttribute('open') && !d.contains(e.target)) close();
+    });
+  })();
+</script>
 
 <style>
   .site-header {
@@ -50,8 +102,7 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem 1.25rem;
-    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
     padding-block: 0.6rem;
   }
 
@@ -76,34 +127,109 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     color: var(--brand-red);
   }
 
-  .nav {
+  .nav-area {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.15rem;
+    align-items: center;
+    gap: 0.25rem;
     font-family: var(--font-ui);
     font-size: var(--text-sm);
   }
-  .nav a {
+
+  .nav-cheatsheet {
     text-decoration: none;
     color: var(--ink-soft);
     padding: 0.45rem 0.6rem;
     border-radius: var(--radius);
     white-space: nowrap;
+    font-weight: 600;
   }
-  .nav a:hover {
+  .nav-cheatsheet:hover {
     background: var(--bg-sunk);
     color: var(--ink);
   }
-  .nav a[aria-current='page'] {
+  .nav-cheatsheet[aria-current='page'] {
+    color: var(--accent);
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.55rem;
+    border-radius: var(--radius);
+    color: var(--ink-soft);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .nav__toggle::-webkit-details-marker {
+    display: none;
+  }
+  .nav__toggle:hover {
+    background: var(--bg-sunk);
+    color: var(--ink);
+  }
+  .nav__toggle-close {
+    display: none;
+  }
+  .nav[open] .nav__toggle svg:first-of-type {
+    display: none;
+  }
+  .nav[open] .nav__toggle-close {
+    display: block;
+  }
+
+  .nav__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .nav__panel a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+  .nav__panel a:hover {
+    background: var(--bg-sunk);
+    color: var(--ink);
+  }
+  .nav__panel a[aria-current='page'] {
     color: var(--accent);
     font-weight: 600;
   }
 
-  @media (max-width: 30rem) {
+  /* ---- mobile: dropdown panel ---- */
+  @media (max-width: 45.999rem) {
     .nav {
-      width: 100%;
-      justify-content: flex-start;
-      margin-inline: -0.6rem;
+      position: static;
+    }
+    .nav[open] .nav__panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      padding: 0.5rem 1.15rem 1rem;
+    }
+  }
+
+  /* ---- desktop: everything inline, no hamburger ---- */
+  @media (min-width: 46rem) {
+    .nav {
+      display: contents;
+    }
+    .nav__toggle {
+      display: none;
+    }
+    .nav__panel {
+      display: flex !important;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.1rem;
     }
   }
 </style>
