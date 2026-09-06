@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CitationBadge from '../components/CitationBadge.astro';
+import {
+  DEFINITIONS,
+  DEFINITIONS_RETRIEVED_ON,
+  defUrl,
+  type Definition,
+} from '../data/definitions';
+
+const groups: { section: string; heading: string; blurb: string; items: Definition[] }[] = [
+  {
+    section: '101.01',
+    heading: 'CARs 101.01 — general definitions',
+    blurb: 'Terms that apply across the whole Canadian Aviation Regulations.',
+    items: DEFINITIONS.filter((d) => d.section === '101.01'),
+  },
+  {
+    section: '700.01',
+    heading: 'CARs 700.01 — Subpart 700 (Division III) definitions',
+    blurb: 'Terms specific to the flight-crew fatigue rules.',
+    items: DEFINITIONS.filter((d) => d.section === '700.01'),
+  },
+];
+
+const anchor = (t: string) =>
+  t
+    .toLowerCase()
+    .replace(/[’']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+---
+
+<BaseLayout
+  title="Glossary"
+  description="Verbatim definitions of the terms used in Canada's flight-crew fatigue rules, from CARs 101.01 and 700.01."
+>
+  <div class="container glossary">
+    <h1>Glossary</h1>
+    <p class="glossary__lede">
+      Every term below is reproduced <strong>verbatim</strong> from the consolidated
+      <em>Canadian Aviation Regulations</em> on the Justice Laws website, verified
+      {
+        new Date(DEFINITIONS_RETRIEVED_ON + 'T00:00:00Z').toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          timeZone: 'UTC',
+        })
+      }. Anything marked <span class="tag">note</span> is our own plain-language clarification, not part
+      of the regulation.
+    </p>
+
+    {
+      groups.map((g) => (
+        <section class="glossary__group">
+          <h2>{g.heading}</h2>
+          <p class="glossary__blurb">{g.blurb}</p>
+          <dl>
+            {g.items.map((d) => (
+              <div class="glossary__item" id={anchor(d.term)}>
+                <dt>
+                  {d.term}
+                  <CitationBadge
+                    citation={{
+                      label: `CARs ${d.section}`,
+                      url: defUrl(d.section),
+                      retrievedOn: DEFINITIONS_RETRIEVED_ON,
+                    }}
+                    small
+                  />
+                </dt>
+                <dd>
+                  <blockquote>{d.text}</blockquote>
+                  {d.note && (
+                    <p class="glossary__note">
+                      <span class="tag">note</span>
+                      {d.note}
+                    </p>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .glossary {
+    padding-block: 2.25rem 1rem;
+    max-width: var(--measure);
+  }
+  .glossary__lede {
+    color: var(--ink-soft);
+  }
+  .glossary__group {
+    margin-top: 2.5rem;
+  }
+  .glossary__blurb {
+    color: var(--ink-faint);
+    font-size: var(--text-sm);
+    margin-top: -0.5rem;
+  }
+  dl {
+    margin: 0;
+  }
+  .glossary__item {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 5rem;
+  }
+  dt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: var(--text-lg);
+  }
+  dd {
+    margin: 0.5rem 0 0;
+  }
+  dd blockquote {
+    margin: 0;
+    padding: 0.5rem 0 0.5rem 1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--ink);
+    font-size: var(--text-sm);
+    font-family: var(--font-ui);
+  }
+  .glossary__note {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin: 0.5rem 0 0;
+  }
+  .tag {
+    flex: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--ink-faint);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 0.05rem 0.4rem;
+  }
+</style>
