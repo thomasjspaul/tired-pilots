@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RegSection from '../../components/RegSection.astro';
 import CitationBadge from '../../components/CitationBadge.astro';
@@ -23,9 +23,11 @@ const { entry } = Astro.props;
 const slug = entry.data.slug ?? entry.data.section.replace(/\./g, '-');
 const { Content } = await render(entry);
 
-// Optional verbatim legal text for the "Regulation text" expander.
-// The glob loader ids entries by path under the collection base, e.g. "en/700-28".
-const legalEntry = await getEntry('regulationText', `${entry.data.lang}/${slug}`);
+// Optional verbatim legal text for the "Regulation text" expander. Not every
+// section has one (e.g. one-sentence rules quoted inline). The glob loader ids
+// entries by path under the collection base, e.g. "en/700-28".
+const legalId = `${entry.data.lang}/${slug}`;
+const legalEntry = (await getCollection('regulationText')).find((e) => e.id === legalId);
 const Legal = legalEntry ? (await render(legalEntry)).Content : null;
 
 // Components made available to MDX bodies without an import.
