@@ -1,0 +1,18 @@
+---
+import { AUGMENTED_CREW_CITATION, AUGMENTED_CREW_TABLE } from '../data/augmentedCrew';
+import DataTable from './DataTable.astro';
+
+const fmt = (h: number) => `${h} hours`;
+---
+
+<DataTable
+  title="Maximum flight duty period — augmented flight crew and rest facility"
+  citation={AUGMENTED_CREW_CITATION}
+  columns={['Maximum flight duty period', 'Additional flight crew members', 'Rest facility']}
+  rows={AUGMENTED_CREW_TABLE.map((r) => [
+    fmt(r.maxFdpHours),
+    r.additionalCrew,
+    r.restFacilityLabel,
+  ])}
+  rowHeaders={false}
+/>

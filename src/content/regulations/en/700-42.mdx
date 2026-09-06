@@ -1,0 +1,81 @@
+---
+title: Time-Zone Rest Requirements
+section: '700.42'
+sor: SOR/96-433
+part: VII
+subpart: 703/704/705
+order: 42
+slug: 700-42
+summary: >-
+  Crossing time zones adds rest: 11 or 14 hours when a flight duty period ends
+  away from home base, and 13 hours or one to three local nights' rest on the
+  return to home base, depending on the difference and how long you were away.
+lawUrl: https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/section-700.42.html
+retrievedOn: 2026-01-15
+acUrl: https://tc.canada.ca/en/aviation/reference-centre/advisory-circulars/advisory-circular-ac-no-700-047
+effectiveDate: 2020-12-12
+hasOldVersion: false
+changesExplained: >-
+  New with the 2018 rules: rest that scales with the number of time zones crossed,
+  to address the sleep disruption of trans-meridian travel.
+relatedCalculator: none
+legacyPaths: []
+lastReviewed: 2026-01-15
+reviewedBy: tiredpilots.ca
+draft: false
+lang: en
+---
+
+These rules **replace** the normal [700.40 rest](/rules/700-40) when your flight
+duty period crosses time zones. The more zones you cross, the longer the rest
+(AC 700-047 §§ 4.43–4.44).
+
+## Flight duty period ends away from home base
+
+<DataTable
+  columns={['Difference between start and end local time', 'Minimum rest', 'CARs']}
+  rows={[
+    ['Less than 4 hours', 'Normal 700.40 rest applies', '—'],
+    ['Exactly 4 hours', '11 consecutive hours in suitable accommodation', '700.42(1)(a)'],
+    ['More than 4 hours', '14 consecutive hours in suitable accommodation', '700.42(1)(b)'],
+  ]}
+/>
+
+## Return to home base (FDP begins in another zone, ends at home base)
+
+The timing runs from when you leave home base until you return. It depends on the
+time-zone difference, how long you were away, and whether the return flight
+touches your [window of circadian low](/rules/700-28#acclimatization) (02:00–05:59
+acclimatized).
+
+<DataTable
+  columns={[
+    'Time-zone difference from home base',
+    'Time away from home base / other condition',
+    'Rest before the next FDP',
+    'CARs',
+  ]}
+  rows={[
+    ['4 hours', 'More than 36 consecutive hours away', '13 consecutive hours', '700.42(2)(a)'],
+    [
+      'More than 4 but not more than 10 hours',
+      '60 hours or less away, and no part of the FDP in the window of circadian low',
+      '1 local night’s rest',
+      '700.42(2)(b)(i)',
+    ],
+    [
+      'More than 4 but not more than 10 hours',
+      'More than 60 hours away, or any part of the FDP in the window of circadian low',
+      '2 local nights’ rest',
+      '700.42(2)(b)(ii)',
+    ],
+    ['More than 10 hours', '60 hours or less away', '2 local nights’ rest', '700.42(2)(c)(i)'],
+    ['More than 10 hours', 'More than 60 hours away', '3 local nights’ rest', '700.42(2)(c)(ii)'],
+  ]}
+/>
+
+## Related
+
+- [Rest periods (700.40)](/rules/700-40)
+- [Disruptive schedules (700.41)](/rules/700-41)
+- [Acclimatization (700.28)](/rules/700-28#acclimatization)
