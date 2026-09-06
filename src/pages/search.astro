@@ -22,7 +22,7 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
       <input type="radio" name="mode" id="mode-keyword" class="search-tabs__radio" checked />
       <label for="mode-keyword" class="search-tabs__label">Keyword</label>
       <input type="radio" name="mode" id="mode-meaning" class="search-tabs__radio" />
-      <label for="mode-meaning" class="search-tabs__label">By meaning</label>
+      <label for="mode-meaning" class="search-tabs__label">Ask a question</label>
 
       <div class="search-tabs__panel" data-mode="keyword">
         <Search
@@ -33,6 +33,9 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
       </div>
 
       <div class="search-tabs__panel" data-mode="meaning">
+        <p class="search-tabs__hint">
+          Type it however you'd say it. This ranks pages by meaning — it doesn't write answers.
+        </p>
         <SemanticSearch client:idle />
       </div>
     </div>
@@ -105,6 +108,12 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
 
   .search-tabs__panel {
     margin-top: 1.25rem;
+  }
+  .search-tabs__hint {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    margin: 0 0 0.85rem;
   }
   .search-tabs__panel[data-mode='meaning'] {
     display: none;
@@ -188,6 +197,13 @@ const query = Astro.url.searchParams.get('q') ?? undefined;
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     color: var(--ink-faint);
-    margin: 0.75rem 0 0;
+    margin: 0.85rem 0 0;
+  }
+  .semsearch__note a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .semsearch__leaf {
+    margin-right: 0.25rem;
   }
 </style>

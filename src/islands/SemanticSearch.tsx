@@ -94,7 +94,7 @@ export default function SemanticSearch() {
       <input
         type="search"
         class="semsearch__input"
-        placeholder="Describe what you're looking for…"
+        placeholder="Ask in your own words…"
         value={q}
         onInput={(e) => setQ((e.target as HTMLInputElement).value)}
         aria-label="Search by meaning"
@@ -123,8 +123,17 @@ export default function SemanticSearch() {
         ))}
       </ul>
 
-      {status === 'ready' && (
-        <p class="semsearch__note">Ranked by meaning using Cohere embeddings. No tracking.</p>
+      {status !== 'unavailable' && (
+        <p class="semsearch__note">
+          <span class="semsearch__leaf" aria-hidden="true">
+            🍁
+          </span>
+          Ranked by meaning using embeddings from{' '}
+          <a href="https://cohere.com" rel="noopener" target="_blank">
+            Cohere
+          </a>
+          , a Canadian AI company. It ranks pages — it doesn't write answers. No tracking.
+        </p>
       )}
     </div>
   );
