@@ -367,3 +367,102 @@ table {
   font-size: var(--text-xs);
   color: var(--ink-faint);
 }
+
+/* ---- Increased Rest flowchart island (src/islands/IncreasedRestFlowchart.tsx) ---- */
+.irf {
+  font-family: var(--font-ui);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.15rem 1.2rem;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow);
+}
+.irf__trail {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+.irf__trail li {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 0.35rem;
+}
+.irf__trail-a {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.irf__q {
+  margin: 0 0 0.8rem;
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+.irf__btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.irf__btns--col {
+  flex-direction: column;
+  align-items: stretch;
+}
+.irf button {
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  text-align: left;
+}
+.irf__btns--col button {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--border-strong);
+}
+.irf button:hover {
+  background: var(--accent-strong);
+  color: var(--accent-ink);
+  border-color: var(--accent-strong);
+}
+.irf__outcome {
+  border-left: 3px solid var(--accent);
+  padding-left: 0.9rem;
+}
+.irf__outcome-cite {
+  margin: 0 0 0.3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.irf__outcome-text {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-sm);
+}
+.irf__outcome-link {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.irf__reset {
+  margin-top: 1rem;
+  background: transparent !important;
+  color: var(--ink-soft) !important;
+  border-color: var(--border-strong) !important;
+  font-weight: 400 !important;
+}
+.irf__source {
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}

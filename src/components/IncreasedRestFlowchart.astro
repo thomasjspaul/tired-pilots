@@ -1,0 +1,10 @@
+---
+/**
+ * Wrapper so MDX bodies can drop <IncreasedRestFlowchart /> without an import or
+ * a client directive (MDX components passed via the `components` prop can't carry
+ * client:* directives themselves).
+ */
+import Island from '../islands/IncreasedRestFlowchart.tsx';
+---
+
+<Island client:visible />

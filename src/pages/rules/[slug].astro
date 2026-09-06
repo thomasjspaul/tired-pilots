@@ -6,6 +6,7 @@ import CitationBadge from '../../components/CitationBadge.astro';
 import FdpTables from '../../components/FdpTables.astro';
 import DataTable from '../../components/DataTable.astro';
 import AugmentedCrewTable from '../../components/AugmentedCrewTable.astro';
+import IncreasedRestFlowchart from '../../components/IncreasedRestFlowchart.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('regulations', (e) => {
@@ -31,7 +32,7 @@ const legalEntry = (await getCollection('regulationText')).find((e) => e.id === 
 const Legal = legalEntry ? (await render(legalEntry)).Content : null;
 
 // Components made available to MDX bodies without an import.
-const mdxComponents = { FdpTables, DataTable, AugmentedCrewTable };
+const mdxComponents = { FdpTables, DataTable, AugmentedCrewTable, IncreasedRestFlowchart };
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.summary}>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FdpCalculator from '../islands/FdpCalculator.tsx';
 
 const topQuestions = [
   { q: 'What does "acclimatized" mean and why does it matter?', href: '/qa/acclimatize' },
@@ -37,16 +38,12 @@ const topics = [
         FDP allowed under CARs 700.28 — and shows exactly which table and rule it used.
       </p>
 
-      <div class="calc-shell" aria-hidden="true">
-        <div class="calc-shell__bar">FDP calculator</div>
-        <div class="calc-shell__body">
-          <span>Report time</span><span>Flights</span><span>Avg flight length</span>
-          <span>Acclimatized?</span><span>Augmented crew</span><span>Split duty</span>
-        </div>
-        <div class="calc-shell__result">Maximum FDP → <strong>coming in Stage 3</strong></div>
+      <div class="hero__calc">
+        <FdpCalculator client:load />
       </div>
+
       <p class="hero__cta">
-        <a class="btn" href="/calculator">Open the calculator</a>
+        <a class="btn" href="/calculator">Open the full calculator page</a>
         <a class="btn btn--dark" href="/cheat-sheet">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path
@@ -132,43 +129,9 @@ const topics = [
     font-size: var(--text-lg);
   }
 
-  .calc-shell {
+  .hero__calc {
     margin: 1.5rem 0 1.25rem;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    max-width: 40rem;
-    box-shadow: var(--shadow);
-    background: var(--bg);
-  }
-  .calc-shell__bar {
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    padding: 0.5rem 0.85rem;
-  }
-  .calc-shell__body {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    padding: 0.85rem;
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-  }
-  .calc-shell__body span {
-    border: 1px dashed var(--border-strong);
-    border-radius: var(--radius);
-    padding: 0.55rem 0.5rem;
-    color: var(--ink-faint);
-  }
-  .calc-shell__result {
-    border-top: 1px solid var(--border);
-    padding: 0.7rem 0.85rem;
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    color: var(--ink-soft);
+    max-width: 42rem;
   }
 
   .hero__cta {
