@@ -1,0 +1,77 @@
+---
+title: How split flight duty periods work
+question: How do split flight duty periods work, and how much extra FDP does a break buy?
+slug: splits-explained
+summary: >-
+  A break of at least 60 minutes in suitable accommodation during a flight duty
+  period lets it exceed the 700.28 maximum. The credit is (break − 45 minutes)
+  × 100% if the break falls 00:00–05:59 acclimatized, or × 50% at any other time.
+order: 20
+relatedRegulations:
+  - 700-50
+  - 700-28
+relatedCalculator: fdp
+lawRefs:
+  - '700.50(1)'
+  - '700.50(2)'
+workedExamples:
+  - label: Minimum 60-minute break, during the day
+    scenario: 'A 60-minute break in suitable accommodation, provided between 06:00 and 23:59 acclimatized.'
+    expected: 'Extra FDP = (60 − 45) × 50% = 7.5 minutes.'
+    expectedFdpHours: 0.125
+    citation: AC 700-047 § 4.50(4)
+  - label: Minimum 60-minute break, overnight
+    scenario: 'The same 60-minute break, provided between 00:00 and 05:59 acclimatized.'
+    expected: 'Extra FDP = (60 − 45) × 100% = 15 minutes.'
+    expectedFdpHours: 0.25
+    citation: AC 700-047 § 4.50(4)
+  - label: Four-hour break, overnight
+    scenario: 'A 4-hour (240-minute) break in suitable accommodation, entirely between 00:00 and 05:59 acclimatized.'
+    expected: 'Extra FDP = (240 − 45) × 100% = 195 minutes (3 h 15 m).'
+    expectedFdpHours: 3.25
+    citation: CARs 700.50(1)(a), (2)
+  - label: Four-hour break, during the day
+    scenario: 'The same 4-hour break, provided between 06:00 and 23:59 acclimatized.'
+    expected: 'Extra FDP = (240 − 45) × 50% = 97.5 minutes (1 h 37.5 m).'
+    expectedFdpHours: 1.625
+    citation: CARs 700.50(1)(b), (2)
+lastReviewed: 2026-01-15
+reviewedBy: tiredpilots.ca
+draft: false
+lang: en
+---
+
+[Section 700.50](/rules/700-50) lets a flight duty period be scheduled **longer
+than the [700.28](/rules/700-28) maximum** if you're given a **break** in
+[suitable accommodation](/glossary#suitable-accommodation) of at least **60
+consecutive minutes** during the FDP.
+
+## The calculation
+
+1. Take the length of the break.
+2. **Subtract 45 minutes** (fixed — it covers getting to bed, falling asleep, and
+   waking up; CARs 700.50(2), AC 700-047 § 4.50).
+3. Multiply by the rate for **when the break falls**, at your acclimatized local
+   time:
+   - **100%** if the break is between **00:00 and 05:59** (CARs 700.50(1)(a));
+   - **50%** if it's between **06:00 and 23:59** (CARs 700.50(1)(b));
+   - **50%** of the whole break (no 45-minute deduction discussion in the AC's
+     wording) if the FDP is re-planned in flight because of an unforeseen
+     operational circumstance (CARs 700.50(1)(c)).
+
+The result is added to the 700.28 maximum. There is **no cap** on the total
+length of an FDP extended this way (AC 700-047 § 4.49).
+
+## Conditions
+
+- The break must be in **suitable accommodation**; travel time to and from it
+  doesn't count toward the 60 minutes.
+- On **night duty**, split duty may extend the FDP for **at most three
+  consecutive nights** (CARs 700.50(3)).
+- No extra rest is required afterwards beyond the normal
+  [700.40(1)](/rules/700-40) rest (AC 700-047 § 4.50(5)).
+- **On reserve:** the reserve duty period may be extended by **two hours**, and
+  no more than **two flights** may follow the break (CARs 700.50(5)).
+
+See also: [Split flight duty (700.50)](/rules/700-50) ·
+[FDP calculator](/calculator)

@@ -1,0 +1,72 @@
+---
+title: 'Continuous duty: how the "sit" time is treated'
+question: What is "continuous duty", and do the hours I sit at an outstation count as rest?
+slug: continuous-duty
+summary: >-
+  "Continuous duty" isn't a CARs term — it's the pattern of reporting in the
+  evening, waiting hours at an outstation, then flying back in the morning. The
+  wait is flight duty period time, not rest. Only a qualifying split-duty break
+  in suitable accommodation counts.
+order: 50
+relatedRegulations:
+  - 700-28
+  - 700-50
+  - 700-41
+relatedCalculator: fdp
+lawRefs:
+  - '700.28'
+  - '700.50'
+workedExamples:
+  - label: Evening report, two flights, no accommodation
+    scenario: >-
+      You report at 21:00 for two flights of about two hours each (average
+      duration 50 minutes or more). You then wait three hours at the outstation
+      with nowhere suitable to sleep before the return flight.
+    expected: >-
+      Maximum FDP is 12:00 — CARs 700.28(4), start-time row 17:00–21:59,
+      "1 to 4 flights" column. The three-hour wait is inside that FDP; it does
+      not extend it.
+    expectedFdpHours: 12
+    citation: CARs 700.28(4)
+  - label: Same trip, but with a qualifying break
+    scenario: >-
+      Same schedule, but the operator provides a 3-hour break in suitable
+      accommodation entirely between 00:00 and 05:59 acclimatized.
+    expected: >-
+      The FDP may be extended by (180 − 45) × 100% = 135 minutes (2 h 15 m),
+      giving a maximum FDP of 14:15.
+    expectedFdpHours: 14.25
+    citation: CARs 700.50(1)(a), (2)
+lastReviewed: 2026-01-15
+reviewedBy: tiredpilots.ca
+draft: false
+lang: en
+---
+
+**"Continuous duty"** is not a term in the CARs. Pilots use it for a common
+pattern: report in the afternoon or evening, fly to an outstation, **wait there
+for hours**, then fly back early the next morning.
+
+## The wait is duty, not rest
+
+That wait sits **inside your [flight duty period](/glossary#flight-duty-period)**.
+It is not a [rest period](/glossary#rest-period) — a rest period is a continuous
+period _off duty_ — and it is not time free from duty. So:
+
+- Your **maximum FDP still comes from [700.28](/rules/700-28)**, keyed to your
+  **evening report time**. Evening starts sit in the more restrictive rows, so the
+  limit is short — often 12 hours or less.
+- The clock keeps running through the wait.
+
+## The only way to break it up
+
+A qualifying **[split flight duty](/rules/700-50)** break — at least 60 minutes in
+**[suitable accommodation](/glossary#suitable-accommodation)** — is the one
+mechanism that both stops counting against you the same way _and_ lets the FDP be
+extended. A wait in a crew room or a terminal is neither.
+
+If the trip flips you between early and late/night duty, the
+[disruptive-schedule rule (700.41)](/rules/700-41) also applies.
+
+See also: [Maximum Flight Duty Period (700.28)](/rules/700-28) ·
+[Split flight duty (700.50)](/rules/700-50) · [FDP calculator](/calculator)
