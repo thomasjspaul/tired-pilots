@@ -10,7 +10,7 @@ backend:
   name: github
   repo: thomasjspaul/tired-pilots
   branch: main
-  base_url: https://tiredpilots-cms-auth.thomasjspaul.workers.dev # <-- set to the OAuth worker URL (oauth/README.md)
+  base_url: https://auth.tiredpilots.ca # OAuth broker Worker, custom domain (oauth/README.md)
 
 # Each "Publish" opens/updates a pull request and triggers a Cloudflare preview
 # build. Merge the PR (button in the CMS or on GitHub) to go live.
