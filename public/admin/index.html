@@ -15,8 +15,10 @@
         1. Pinned to an exact version (never a floating "latest").
         2. Locked with a Subresource Integrity hash — the browser refuses to run
            the file if a single byte differs from what was reviewed.
-        3. Allow-listed to unpkg.com only, in the /admin Content-Security-Policy
-           (see public/_headers).
+        3. Allow-listed to unpkg.com in the site CSP (see public/_headers).
+
+      The bundle is a classic script (an IIFE), not an ES module — do not add
+      type="module".
 
       To upgrade: pick a release at https://github.com/sveltia/sveltia-cms/releases,
       then regenerate the hash and bump the version here together —
@@ -26,7 +28,6 @@
       src="https://unpkg.com/@sveltia/cms@0.206.1/dist/sveltia-cms.js"
       integrity="sha384-xtkktf/PnkYVudN36SQmxuHDpnU7zIXpEgnZ310X63SyQibGWvQ82Q/GSjLtY1Tu"
       crossorigin="anonymous"
-      type="module"
     ></script>
   </body>
 </html>

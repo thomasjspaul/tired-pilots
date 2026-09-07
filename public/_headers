@@ -3,9 +3,10 @@
 # NOTE: Pages *combines* a header set by several matching rules — it does not let
 # a more specific path override it. Two Content-Security-Policy headers would be
 # enforced as their intersection, which breaks /admin. So there is ONE CSP here,
-# wide enough to also cover the Sveltia CMS on /admin (unpkg + GitHub API + the
-# OAuth broker at auth.tiredpilots.ca). The CMS is still noindex, sign-in gated,
-# and its script is version-pinned + SRI-locked in /admin/index.html.
+# wide enough to also cover the Sveltia CMS on /admin: script + fonts from
+# jsDelivr/unpkg, the GitHub API, github status, and the OAuth broker at
+# auth.tiredpilots.ca. The CMS is still noindex, sign-in gated, and its script is
+# version-pinned + SRI-locked in /admin/index.html.
 #
 # COOP is same-origin-allow-popups, not same-origin: the CMS sign-in opens the
 # OAuth broker in a popup and the broker's callback calls window.opener.postMessage
@@ -20,7 +21,7 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://auth.tiredpilots.ca; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://cdn.jsdelivr.net; worker-src 'self' blob:; connect-src 'self' data: https://cloudflareinsights.com https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://www.githubstatus.com https://auth.tiredpilots.ca; manifest-src 'self'; upgrade-insecure-requests
 
 # The CMS admin shell — keep it out of search and out of the cache.
 /admin/*
