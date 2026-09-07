@@ -29,5 +29,13 @@
       integrity="sha384-xtkktf/PnkYVudN36SQmxuHDpnU7zIXpEgnZ310X63SyQibGWvQ82Q/GSjLtY1Tu"
       crossorigin="anonymous"
     ></script>
+
+    <!--
+      Editorial assistant — adds a "Run editorial review" panel to the preview
+      pane (Cohere-backed proofread + source-fidelity check). First-party, served
+      from this repo, so no SRI; covered by `script-src 'self'`. It no-ops if the
+      Sveltia preview API is unavailable. See docs/EDITORIAL-ASSISTANT.md.
+    -->
+    <script src="/admin/assistant.js"></script>
   </body>
 </html>
