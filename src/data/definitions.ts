@@ -72,6 +72,12 @@ export const DEFINITIONS: readonly Definition[] = [
     text: 'a single-occupancy bedroom that is subject to a minimal level of noise, is well ventilated and has facilities to control the levels of temperature and light or, where such a bedroom is not available, an accommodation that is suitable for the site and season, is subject to a minimal level of noise and provides adequate comfort and protection from the elements',
   },
   {
+    term: 'medical evacuation flight',
+    section: '101.01',
+    text: 'a flight that is carried out for the purpose of facilitating medical assistance and on which one or more of the following persons or things is transported: (a) medical personnel, (b) ill or injured persons, (c) human blood products or organs, (d) medical supplies',
+    note: 'Positioning an aircraft before or after such a flight also counts as a medical evacuation flight (section 700.100(3)). These flights run on Division IV of Subpart 700 — the Medevac fatigue rules — not the 703/704/705 rules.',
+  },
+  {
     term: 'acclimatized',
     section: '700.01',
     text: 'describes a flight crew member whose biorhythm is aligned with local time',
