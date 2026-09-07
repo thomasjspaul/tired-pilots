@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Rewriter from '../islands/Rewriter.tsx';
+---
+
+<BaseLayout
+  title="Rewrite helper"
+  description="Editor tool: smooth choppy page prose without changing the meaning."
+  noindex
+>
+  <div class="container container--wide rw-page">
+    <p class="rw-page__eyebrow">Editor tool — not linked from the site</p>
+    <h1>Rewrite helper</h1>
+    <p class="rw-page__lede">
+      Paste a section of a page's Markdown. It comes back smoother — choppy sentences joined,
+      plainer wording, active voice — with every number, citation, link and defined term kept
+      exactly as-is. Review it, then paste it into the CMS body yourself. Work one <code>##</code> section
+      at a time for the best results.
+    </p>
+
+    <Rewriter client:load />
+
+    <section class="rw-page__notes prose">
+      <h2>What it won't do</h2>
+      <ul>
+        <li>Change facts, numbers, times, dates, or a CARs section reference.</li>
+        <li>Swap a defined term (<em>flight time</em>, <em>rest period</em>, …) for a synonym.</li>
+        <li>Move or break a Markdown link, heading, list, or embedded component.</li>
+        <li>Save anything. Nothing here touches the site or the CMS until you paste it in.</li>
+      </ul>
+      <p>
+        The <strong>meaning match</strong> score and the <strong>verify these</strong> list are there
+        to catch a slip — but you are still the editor. Read the result before you use it.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .rw-page {
+    padding-block: 2.25rem 3rem;
+  }
+  .rw-page__eyebrow {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    margin: 0 0 0.35rem;
+  }
+  .rw-page h1 {
+    margin: 0 0 0.5rem;
+  }
+  .rw-page__lede {
+    color: var(--ink-soft);
+    font-size: var(--text-lg);
+    margin: 0 0 1.75rem;
+    max-width: var(--measure);
+  }
+  .rw-page__notes {
+    margin-top: 2.5rem;
+    font-size: var(--text-sm);
+  }
+
+  /* ---- Rewriter island (src/islands/Rewriter.tsx) ---- */
+  .rw {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+  .rw__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+  .rw__in {
+    width: 100%;
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+    resize: vertical;
+  }
+  .rw__in:focus-visible {
+    box-shadow: var(--focus);
+    outline: none;
+  }
+  .rw__src {
+    margin-top: 0.75rem;
+  }
+  .rw__src > summary {
+    cursor: pointer;
+    color: var(--ink-soft);
+    padding: 0.35rem 0;
+  }
+  .rw__in--src {
+    margin-top: 0.5rem;
+  }
+
+  .rw__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem 1rem;
+    margin-top: 1rem;
+  }
+  .rw__touch {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .rw__touch select {
+    font: inherit;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .rw__go {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+    cursor: pointer;
+  }
+  .rw__go:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .rw__msg {
+    margin: 0.9rem 0 0;
+    color: var(--ink-soft);
+  }
+  .rw__msg--warn {
+    color: var(--warn-ink);
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.7rem;
+  }
+
+  .rw__out {
+    margin-top: 1.5rem;
+  }
+  .rw__bands {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .rw__band {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .rw__band--ok {
+    background: #e9f5ec;
+    border-color: #b7ddc1;
+  }
+  .rw__band--warn {
+    background: var(--warn-bg);
+    border-color: var(--warn-border);
+  }
+  .rw__band--bad {
+    background: var(--accent-soft);
+    border-color: #eab4bd;
+  }
+
+  .rw__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+  .rw__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+  }
+  .rw__copy {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: var(--bg-raised);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .rw__cols {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 52rem) {
+    .rw__cols {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .rw__col h3 {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    margin: 0 0 0.4rem;
+  }
+  .rw__pre,
+  .rw__diff {
+    margin: 0;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-sunk);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 32rem;
+    overflow: auto;
+  }
+  .rw__result {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+    resize: vertical;
+  }
+  .rw__diff ins {
+    background: #d8f0df;
+    text-decoration: none;
+  }
+  .rw__diff del {
+    background: var(--accent-soft);
+    text-decoration: line-through;
+  }
+
+  .rw__checks {
+    margin-top: 1.25rem;
+  }
+  .rw__checks h3 {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    margin: 0 0 0.4rem;
+  }
+  .rw__checks ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+  .rw__checks li {
+    margin: 0.3rem 0;
+  }
+  .rw__checks q {
+    font-style: italic;
+  }
+
+  .rw__note {
+    margin-top: 1.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: var(--text-xs);
+    color: var(--ink-soft);
+  }
+  .rw__note a {
+    color: inherit;
+  }
+  .rw__leaf {
+    margin-right: 0.25rem;
+  }
+</style>
