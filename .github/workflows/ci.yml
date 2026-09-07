@@ -1,15 +1,25 @@
 name: CI
 
+# Runs on every pull request into main and on every push to main.
+# Cloudflare Pages deploys separately after a merge — this workflow never deploys.
+
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
 
 permissions:
   contents: read
 
+# A newer commit on the same branch / PR cancels an in-progress run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify:
+  ci:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,13 +29,23 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - run: npm ci
+      # Clean, lockfile-exact install.
+      - name: Install
+        run: npm ci
 
-      # Regulation-logic + table-integrity tests. A red suite blocks the merge.
-      - run: npm test
+      # Lint: the repo is formatted with Prettier (.prettierrc); fail on drift.
+      - name: Format check
+        run: npx prettier --check .
 
-      # Type-check .astro / .ts.
-      - run: npm run check
+      # Type-check .astro / .ts (astro check).
+      - name: Type check
+        run: npm run check
 
-      # Full static build (also runs the Pagefind index step).
-      - run: npm run build
+      # Regulation-logic, table-integrity, timezone and security-config tests.
+      - name: Tests
+        run: npm test
+
+      # Full static build, including the Pagefind index step. Needs no secrets:
+      # the semantic-search index step skips itself when COHERE_API_KEY is absent.
+      - name: Build
+        run: npm run build
