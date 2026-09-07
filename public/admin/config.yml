@@ -4,7 +4,6 @@
 # BEFORE GO-LIVE:
 #   1. set `backend.repo` to  <your-github-user>/tired-pilots
 #   2. set `backend.base_url` to the deployed OAuth worker URL (see /oauth/README.md)
-#   3. keep `local_backend: true` only while testing on your own machine
 
 backend:
   name: github
@@ -16,16 +15,11 @@ backend:
 # build. Merge the PR (button in the CMS or on GitHub) to go live.
 publish_mode: editorial_workflow
 
-# Set to true ONLY for local testing with `npx @sveltia/cms-proxy-server`.
-local_backend: false
-
 media_folder: public/uploads
 public_folder: /uploads
 
 site_url: https://tiredpilots.ca
 display_url: https://tiredpilots.ca
-
-locale: en
 
 collections:
   # ---------------------------------------------------------------- regulations
