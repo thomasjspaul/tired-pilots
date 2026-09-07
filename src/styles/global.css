@@ -245,6 +245,34 @@ table {
 .fdpc__field--indent {
   margin-left: 1.6rem;
 }
+.fdpc__zones {
+  display: grid;
+  gap: 0.7rem;
+}
+.fdpc__zone-tools {
+  margin: 0;
+}
+.fdpc__zone-tools button {
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.fdpc__zone-tools button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.fdpc__zone-note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+.fdpc input[type='text'],
 .fdpc input[type='time'],
 .fdpc input[type='number'],
 .fdpc select {

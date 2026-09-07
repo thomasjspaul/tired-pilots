@@ -2,13 +2,38 @@
 import { useMemo, useState } from 'preact/hooks';
 import { calculateMaxFdp } from '../lib/fdp/calculate';
 import type { AvgDurationBucket, FdpInput, SplitWindow } from '../lib/fdp/types';
+import {
+  describeOffset,
+  localZone,
+  offsetHoursBetween,
+  zoneOffsetMinutes,
+  zoneOptions,
+} from '../lib/fdp/timezones';
 
 type AugChoice = 'none' | '1|1' | '1|2' | '1|3' | '2|1' | '2|2' | '2|3';
+
+const ZONES = zoneOptions();
+const LABEL_TO_ID = new Map(ZONES.map((z) => [z.label, z.id]));
+const ID_TO_LABEL = new Map(ZONES.map((z) => [z.id, z.label]));
+
+/** A datalist entry (label) or a raw IANA name -> the IANA name, or '' if unusable. */
+function resolveZone(text: string): string {
+  const t = text.trim();
+  if (!t) return '';
+  if (LABEL_TO_ID.has(t)) return LABEL_TO_ID.get(t)!;
+  return Number.isNaN(zoneOffsetMinutes(t)) ? '' : t;
+}
+
+/** Friendly label for an IANA id if we have one, else a tidied version of the id. */
+function labelForId(id: string): string {
+  return ID_TO_LABEL.get(id) ?? `${id.split('/').pop()?.replace(/_/g, ' ')} — ${id}`;
+}
 
 interface State {
   startTime: string;
   acclimatized: boolean;
-  offsetHours: string; // signed, "+ ahead / − behind"
+  accZone: string; // datalist label or IANA name
+  fdpZone: string;
   numFlights: string;
   avgDuration: AvgDurationBucket;
   dayVfr: boolean;
@@ -18,10 +43,13 @@ interface State {
   splitWindow: SplitWindow;
 }
 
+const HERE = labelForId(localZone());
+
 const DEFAULTS: State = {
   startTime: '07:00',
   acclimatized: true,
-  offsetHours: '0',
+  accZone: HERE,
+  fdpZone: HERE,
   numFlights: '2',
   avgDuration: 'gte50',
   dayVfr: false,
@@ -38,7 +66,8 @@ function fromQuery(): State {
   return {
     startTime: g('t', DEFAULTS.startTime),
     acclimatized: g('acc', '1') !== '0',
-    offsetHours: g('off', '0'),
+    accZone: g('az', DEFAULTS.accZone),
+    fdpZone: g('fz', DEFAULTS.fdpZone),
     numFlights: g('n', DEFAULTS.numFlights),
     avgDuration: (['lt30', '30to50', 'gte50'].includes(g('d', ''))
       ? g('d', '')
@@ -55,13 +84,29 @@ function fromQuery(): State {
   };
 }
 
+/** Report time on today's date, for DST-correct zone offsets. */
+function reportInstant(startTime: string): Date {
+  const [h, m] = startTime.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h || 0, m || 0, 0, 0);
+  return d;
+}
+
+function computedOffsetHours(s: State): number {
+  const acc = resolveZone(s.accZone);
+  const fdp = resolveZone(s.fdpZone);
+  if (!acc || !fdp) return 0;
+  const h = offsetHoursBetween(acc, fdp, reportInstant(s.startTime));
+  return Number.isFinite(h) ? h : 0;
+}
+
 function toInput(s: State): FdpInput {
   const [ac, rf] = s.aug === 'none' ? [null, null] : s.aug.split('|').map(Number);
   return {
     startTime: s.startTime,
     acclimatization: s.acclimatized
       ? { state: 'acclimatized' }
-      : { state: 'not-acclimatized', acclimatizedZoneOffsetHours: Number(s.offsetHours) || 0 },
+      : { state: 'not-acclimatized', acclimatizedZoneOffsetHours: computedOffsetHours(s) },
     numFlights: Number(s.numFlights) || 1,
     avgDuration: s.avgDuration,
     dayVfr: s.dayVfr,
@@ -78,7 +123,10 @@ function syncQuery(s: State) {
   const q = new URLSearchParams();
   q.set('t', s.startTime);
   q.set('acc', s.acclimatized ? '1' : '0');
-  if (!s.acclimatized) q.set('off', s.offsetHours);
+  if (!s.acclimatized) {
+    q.set('az', s.accZone);
+    q.set('fz', s.fdpZone);
+  }
   q.set('n', s.numFlights);
   q.set('d', s.avgDuration);
   if (s.dayVfr) q.set('vfr', '1');
@@ -166,20 +214,66 @@ export default function FdpCalculator() {
         </label>
 
         {!s.acclimatized && (
-          <label class="fdpc__field fdpc__field--indent">
-            <span>
-              The zone I'm acclimatized to is this many hours ahead (+) or behind (−) where I report
-            </span>
-            <input
-              type="number"
-              step="0.5"
-              min="-12"
-              max="12"
-              value={s.offsetHours}
-              onInput={(e) => set('offsetHours', (e.target as HTMLInputElement).value)}
-            />
-          </label>
+          <div class="fdpc__field--indent fdpc__zones">
+            <label class="fdpc__field">
+              <span>Time zone I'm acclimatized to (usually home base)</span>
+              <input
+                type="text"
+                list="fdpc-zones"
+                autocomplete="off"
+                placeholder="Type a city, country, or “Eastern”…"
+                value={s.accZone}
+                onInput={(e) => set('accZone', (e.target as HTMLInputElement).value)}
+              />
+            </label>
+
+            <label class="fdpc__field">
+              <span>Time zone where this FDP starts</span>
+              <input
+                type="text"
+                list="fdpc-zones"
+                autocomplete="off"
+                placeholder="Type a city, country, or “Eastern”…"
+                value={s.fdpZone}
+                onInput={(e) => set('fdpZone', (e.target as HTMLInputElement).value)}
+              />
+            </label>
+
+            <p class="fdpc__zone-tools">
+              <button type="button" onClick={() => set('fdpZone', labelForId(localZone()))}>
+                Use my current time zone
+              </button>
+            </p>
+
+            {(() => {
+              const acc = resolveZone(s.accZone);
+              const fdp = resolveZone(s.fdpZone);
+              if (!acc || !fdp)
+                return (
+                  <p class="fdpc__zone-note">Pick both time zones to work out the difference.</p>
+                );
+              const h = offsetHoursBetween(acc, fdp, reportInstant(s.startTime));
+              if (h === 0)
+                return (
+                  <p class="fdpc__zone-note">
+                    Same time — you're effectively acclimatized. The table uses your report time.
+                  </p>
+                );
+              return (
+                <p class="fdpc__zone-note">
+                  Your acclimatized zone is <strong>{describeOffset(h)}</strong> — the table start
+                  time becomes the local time back there.
+                </p>
+              );
+            })()}
+          </div>
         )}
+
+        <datalist id="fdpc-zones">
+          {ZONES.map((z) => (
+            <option key={z.id} value={z.label} />
+          ))}
+        </datalist>
 
         <label class="fdpc__check">
           <input
