@@ -184,3 +184,44 @@ Do this on one dedicated branch **after** the DNS cutover, never beside it:
 
 Until then, enable **Dependabot security updates** (§B4) so fixes land as PRs,
 and keep triaging here rather than leaving alerts unread.
+
+---
+
+## F. Editorial assistant — `/api/review` (added 2026‑09‑07)
+
+A second Cohere-backed Pages Function powers the CMS "Editorial review" panel
+(`functions/api/review.js`; see `docs/EDITORIAL-ASSISTANT.md`). It sends draft
+page text — and, for regulation pages, the verbatim CARs text — to Cohere
+`/v2/chat` + `/v2/embed` and returns _flags_ for the human editor. It is
+**operator tooling, not visitor-facing**; the visitor privacy statement is
+unchanged.
+
+**In code** (mirrors §A3):
+
+- Same-origin guard (`Origin`/`Referer` host allow-list) → `403`.
+- `content-length` cap **32 KB** → `413`; each text field clamped to 16 KB;
+  draft under 40 chars → `400`. Result groups clamped to 25 items / 600 chars.
+- No edge cache — `cache-control: no-store`, plus `nosniff` + `noindex`.
+- `env.COHERE_API_KEY` absent → `503` (fork previews degrade cleanly).
+- A Cohere failure returns `chatError: true` with the drift score, **not** a 5xx.
+- The prompt forbids rewriting and forbids certifying accuracy.
+
+**Dashboard actions (Thomas):**
+
+1. **Cloudflare Access** — Zero Trust → Access → Applications → **self-hosted
+   application** covering `tiredpilots.ca/admin` **and** `tiredpilots.ca/api/review`.
+   One policy: Action **Allow**, Include **Emails** = your address; session ~1
+   month; identity method One-time PIN is enough. This must be an **identity
+   policy, not a Managed Challenge** (a background `fetch` can't solve a
+   challenge — that is what broke `/admin` earlier; an Access session cookie
+   _is_ sent on background fetches). After enabling, re-verify: `/admin` loads,
+   `config.yml` fetches, the GitHub OAuth popup to `auth.tiredpilots.ca`
+   (different host, not covered) still works, and the review panel still gets a
+   result.
+2. **WAF rate-limit** — `URI Path equals /api/review` → Block 1 min when > **10
+   req/min** per IP.
+3. **Cohere** — `/v2/chat` costs more per call than `/v2/embed`; keep the ~$5
+   monthly cap and add a 50 % budget alert. Hitting the cap also pauses semantic
+   search (shared key); a separate key is an easy later change.
+4. Confirm `COHERE_API_KEY` is set for **Production and Preview** (already
+   required for search).
