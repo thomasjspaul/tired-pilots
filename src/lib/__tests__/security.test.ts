@@ -6,11 +6,18 @@ const read = (p: string) => readFileSync(resolve(process.cwd(), p), 'utf8');
 
 describe('public/_headers', () => {
   const headers = read('public/_headers');
+  // [0] = the site-wide `/*` block, [1] = the `/admin/*` override.
+  const cspLines = headers.match(/Content-Security-Policy:.*/g) ?? [];
+
+  /** The remote (http/https) origins listed in a CSP line's `script-src`. */
+  const scriptSrcOrigins = (cspLine: string): string[] =>
+    (cspLine.match(/script-src ([^;]+)/)?.[1] ?? '')
+      .split(/\s+/)
+      .filter((token) => token.startsWith('https://') || token.startsWith('http://'));
 
   it('sets a site-wide Content-Security-Policy with the hardening directives', () => {
-    const csp = headers.match(/Content-Security-Policy:.*/g) ?? [];
-    expect(csp.length).toBeGreaterThanOrEqual(2); // site-wide + /admin
-    const siteWide = csp[0];
+    expect(cspLines.length).toBeGreaterThanOrEqual(2);
+    const siteWide = cspLines[0];
     for (const directive of [
       "default-src 'self'",
       "object-src 'none'",
@@ -30,13 +37,13 @@ describe('public/_headers', () => {
     expect(headers).toContain('Cross-Origin-Opener-Policy: same-origin');
   });
 
-  it('only allows the CMS script host inside the /admin CSP', () => {
-    const adminCsp = (headers.match(/Content-Security-Policy:.*/g) ?? []).find((l) =>
-      l.includes('unpkg.com'),
-    );
-    expect(adminCsp, 'an /admin CSP block should exist').toBeTruthy();
-    // no unexpected script origins snuck in
-    expect(adminCsp).not.toMatch(/script-src[^;]*https?:\/\/(?!unpkg\.com)/);
+  it('site-wide CSP loads remote scripts only from the analytics beacon', () => {
+    expect(scriptSrcOrigins(cspLines[0])).toEqual(['https://static.cloudflareinsights.com']);
+  });
+
+  it('the /admin CSP loads remote scripts only from the pinned CMS CDN', () => {
+    expect(cspLines.length).toBeGreaterThanOrEqual(2);
+    expect(scriptSrcOrigins(cspLines[1])).toEqual(['https://unpkg.com']);
   });
 });
 
@@ -58,8 +65,9 @@ describe('functions/api/embed.js', () => {
   const fn = read('functions/api/embed.js');
 
   it('rejects requests that are not from an allowed origin', () => {
-    expect(fn).toMatch(/originAllowed/);
-    expect(fn).toContain("'tiredpilots.ca'");
+    expect(fn).toMatch(/function originAllowed\(/);
+    // the guard compares the parsed host by exact equality, not substring
+    expect(fn).toMatch(/host === 'tiredpilots\.ca'/);
     expect(fn).toMatch(/return json\(\{ error: 'forbidden' \}, 403\)/);
   });
 
