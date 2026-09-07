@@ -399,9 +399,22 @@ table {
   white-space: nowrap;
 }
 .irf__q {
-  margin: 0 0 0.8rem;
+  margin: 0 0 0.4rem;
   font-weight: 600;
   font-size: var(--text-base);
+}
+.irf__hint {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+.irf__help {
+  margin: 0 0 0.85rem;
+  font-size: var(--text-xs);
+}
+.irf__help a {
+  color: var(--accent);
+  text-decoration: none;
 }
 .irf__btns {
   display: flex;

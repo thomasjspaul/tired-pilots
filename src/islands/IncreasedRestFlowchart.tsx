@@ -74,6 +74,12 @@ export default function IncreasedRestFlowchart() {
       {node.kind === 'question' && (
         <div class="irf__step">
           <p class="irf__q">{node.text}</p>
+          {node.hint && <p class="irf__hint">{node.hint}</p>}
+          {node.help && (
+            <p class="irf__help">
+              <a href={node.help.href}>{node.help.label} &rarr;</a>
+            </p>
+          )}
           <div class="irf__btns">
             <button type="button" onClick={() => push('y')}>
               Yes
@@ -88,6 +94,7 @@ export default function IncreasedRestFlowchart() {
       {node.kind === 'choice' && (
         <div class="irf__step">
           <p class="irf__q">{node.text}</p>
+          {node.hint && <p class="irf__hint">{node.hint}</p>}
           <div class="irf__btns irf__btns--col">
             {node.options.map((o, i) => (
               <button key={i} type="button" onClick={() => push(String.fromCharCode(97 + i))}>
