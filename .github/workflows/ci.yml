@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write # to post the `ci-status` commit status (see the last steps)
 
 # A newer commit on the same branch / PR cancels an in-progress run.
 concurrency:
@@ -49,3 +50,28 @@ jobs:
       # the semantic-search index step skips itself when COHERE_API_KEY is absent.
       - name: Build
         run: npm run build
+
+      # This repo reports CI as an Actions *check*. GitHub's legacy "combined
+      # commit status" endpoint doesn't see checks, so it stays "pending" and the
+      # PR never reads as "clean" — which stops the Sveltia CMS "Publish" button
+      # from merging. Post a plain `ci-status` commit status so the combined
+      # status can go green. (Not a required check; `CI` above is the gate.)
+      - name: Commit status — passed
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST \
+            "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha || github.sha }}" \
+            -f state=success -f context=ci-status -f description='CI passed' \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Commit status — failed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST \
+            "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha || github.sha }}" \
+            -f state=failure -f context=ci-status -f description='CI failed' \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
