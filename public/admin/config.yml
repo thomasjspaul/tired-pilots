@@ -186,6 +186,20 @@ collections:
           required: false,
           field: { name: ref, widget: string },
         }
+      - {
+          name: lawUrl,
+          label: Justice Laws link for the main CARs section (optional),
+          widget: string,
+          required: false,
+          pattern:
+            ['^https://laws-lois\.justice\.gc\.ca/', 'Must be a laws-lois.justice.gc.ca URL'],
+        }
+      - {
+          name: acUrl,
+          label: Advisory Circular 700-047 link (optional),
+          widget: string,
+          required: false,
+        }
       - { name: relatedCalculator, widget: select, options: ['none', 'fdp'], default: 'none' }
       - name: workedExamples
         label: Worked examples (also used as calculator tests)

@@ -99,6 +99,8 @@ const explainers = defineCollection({
       relatedRegulations: z.array(reference('regulations')).default([]),
       relatedCalculator: z.enum(['none', 'fdp']).default('none'),
       lawRefs: z.array(z.string()).default([]),
+      lawUrl: z.string().url().optional(), // laws-lois.justice.gc.ca deep link
+      acUrl: z.string().url().optional(), // Advisory Circular 700-047
       workedExamples: z.array(workedExample).default([]),
       ...reviewable,
     }),
