@@ -38,12 +38,13 @@ describe('public/_headers', () => {
   });
 
   it('site-wide CSP loads remote scripts only from the analytics beacon', () => {
-    expect(scriptSrcOrigins(cspLines[0])).toEqual(['https://static.cloudflareinsights.com']);
+    expect(cspLines.length).toBeGreaterThanOrEqual(2);
+    expect(scriptSrcOrigins(cspLines[0] ?? '')).toEqual(['https://static.cloudflareinsights.com']);
   });
 
   it('the /admin CSP loads remote scripts only from the pinned CMS CDN', () => {
     expect(cspLines.length).toBeGreaterThanOrEqual(2);
-    expect(scriptSrcOrigins(cspLines[1])).toEqual(['https://unpkg.com']);
+    expect(scriptSrcOrigins(cspLines[1] ?? '')).toEqual(['https://unpkg.com']);
   });
 });
 
