@@ -1,7 +1,11 @@
 # Cloudflare Pages headers. https://developers.cloudflare.com/pages/configuration/headers/
 #
-# A more specific path block overrides the same header from a less specific one,
-# so /admin/* below replaces the site-wide Content-Security-Policy for the CMS.
+# NOTE: Pages *combines* a header set by several matching rules — it does not let
+# a more specific path override it. Two Content-Security-Policy headers would be
+# enforced as their intersection, which breaks /admin. So there is ONE CSP here,
+# wide enough to also cover the Sveltia CMS on /admin (unpkg + GitHub API + the
+# OAuth broker Worker). The CMS is still noindex, sign-in gated, and its script
+# is version-pinned + SRI-locked in /admin/index.html.
 
 /*
   X-Content-Type-Options: nosniff
@@ -10,16 +14,12 @@
   Cross-Origin-Opener-Policy: same-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; worker-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://tiredpilots-cms-auth.thomasjspaul.workers.dev; manifest-src 'self'; upgrade-insecure-requests
 
-# The CMS admin shell loads Sveltia from unpkg and talks to the GitHub API and
-# the OAuth broker Worker. It is noindex and sign-in gated; only the site owner
-# reaches it. Its script source is still pinned to unpkg and SRI-locked in
-# /admin/index.html.
+# The CMS admin shell — keep it out of search and out of the cache.
 /admin/*
   X-Robots-Tag: noindex
   Cache-Control: no-cache
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' blob: data: https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://tiredpilots-cms-auth.thomasjspaul.workers.dev
 
 # Long-cache fingerprinted build assets.
 /_astro/*

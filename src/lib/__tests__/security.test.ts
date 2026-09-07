@@ -6,18 +6,21 @@ const read = (p: string) => readFileSync(resolve(process.cwd(), p), 'utf8');
 
 describe('public/_headers', () => {
   const headers = read('public/_headers');
-  // [0] = the site-wide `/*` block, [1] = the `/admin/*` override.
   const cspLines = headers.match(/Content-Security-Policy:.*/g) ?? [];
 
   /** The remote (http/https) origins listed in a CSP line's `script-src`. */
   const scriptSrcOrigins = (cspLine: string): string[] =>
     (cspLine.match(/script-src ([^;]+)/)?.[1] ?? '')
       .split(/\s+/)
-      .filter((token) => token.startsWith('https://') || token.startsWith('http://'));
+      .filter((token) => token.startsWith('https://') || token.startsWith('http://'))
+      .sort();
 
-  it('sets a site-wide Content-Security-Policy with the hardening directives', () => {
-    expect(cspLines.length).toBeGreaterThanOrEqual(2);
-    const siteWide = cspLines[0];
+  it('has exactly one CSP (Pages combines duplicates as an intersection)', () => {
+    expect(cspLines.length).toBe(1);
+  });
+
+  it('keeps the hardening directives', () => {
+    const csp = cspLines[0] ?? '';
     for (const directive of [
       "default-src 'self'",
       "object-src 'none'",
@@ -26,7 +29,7 @@ describe('public/_headers', () => {
       "form-action 'self'",
       'upgrade-insecure-requests',
     ]) {
-      expect(siteWide).toContain(directive);
+      expect(csp).toContain(directive);
     }
   });
 
@@ -37,14 +40,16 @@ describe('public/_headers', () => {
     expect(headers).toContain('Cross-Origin-Opener-Policy: same-origin');
   });
 
-  it('site-wide CSP loads remote scripts only from the analytics beacon', () => {
-    expect(cspLines.length).toBeGreaterThanOrEqual(2);
-    expect(scriptSrcOrigins(cspLines[0] ?? '')).toEqual(['https://static.cloudflareinsights.com']);
+  it('allows remote scripts only from the analytics beacon and the pinned CMS CDN', () => {
+    expect(scriptSrcOrigins(cspLines[0] ?? '')).toEqual([
+      'https://static.cloudflareinsights.com',
+      'https://unpkg.com',
+    ]);
   });
 
-  it('the /admin CSP loads remote scripts only from the pinned CMS CDN', () => {
-    expect(cspLines.length).toBeGreaterThanOrEqual(2);
-    expect(scriptSrcOrigins(cspLines[1] ?? '')).toEqual(['https://unpkg.com']);
+  it('does not set a second CSP on /admin', () => {
+    const adminBlock = headers.slice(headers.indexOf('/admin/*'));
+    expect(adminBlock).not.toContain('Content-Security-Policy');
   });
 });
 
