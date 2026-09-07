@@ -66,6 +66,10 @@ describe('public/admin/index.html', () => {
     expect(html).toMatch(/integrity="sha(256|384|512)-[A-Za-z0-9+/=]+"/);
     expect(html).toContain('crossorigin="anonymous"');
   });
+
+  it('loads the first-party editorial assistant script', () => {
+    expect(html).toContain('<script src="/admin/assistant.js"></script>');
+  });
 });
 
 describe('functions/api/embed.js', () => {
