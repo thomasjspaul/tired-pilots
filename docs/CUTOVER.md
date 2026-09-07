@@ -2,6 +2,11 @@
 
 **Not done yet.** Notes for when we're ready.
 
+> Before starting, clear the **[cutover blocker]** items in
+> [`PRE-LAUNCH-SECURITY.md`](./PRE-LAUNCH-SECURITY.md): the Cohere spend cap
+> (B1), the WAF rate‑limit rule on `/api/embed` (B2), and disabling the
+> "Redirect root to www" rule (B3, same as the section below).
+
 ## The existing redirect that has to change
 
 There is currently a Cloudflare **Redirect Rule** on the `tiredpilots.ca` zone that

@@ -1,0 +1,9 @@
+# https://tiredpilots.ca/.well-known/security.txt  (RFC 9116)
+# Refresh the Expires date at least once a year.
+
+Contact: mailto:security@tiredpilots.ca
+Contact: https://github.com/thomasjspaul/tired-pilots/security/advisories/new
+Expires: 2027-09-06T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://tiredpilots.ca/.well-known/security.txt
+Policy: https://github.com/thomasjspaul/tired-pilots/blob/main/SECURITY.md

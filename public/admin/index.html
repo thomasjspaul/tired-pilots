@@ -8,10 +8,25 @@
   </head>
   <body>
     <!--
-      Sveltia CMS (Decap-compatible). Pin an exact version before go-live so the
-      admin shell is reproducible and can be allow-listed in the CSP (Stage 4).
-      Check the latest at https://github.com/sveltia/sveltia-cms/releases
+      Sveltia CMS (Decap-compatible).
+
+      This admin shell runs with the signed-in editor's GitHub push access, so the
+      script it loads is security-critical. It is therefore:
+        1. Pinned to an exact version (never a floating "latest").
+        2. Locked with a Subresource Integrity hash — the browser refuses to run
+           the file if a single byte differs from what was reviewed.
+        3. Allow-listed to unpkg.com only, in the /admin Content-Security-Policy
+           (see public/_headers).
+
+      To upgrade: pick a release at https://github.com/sveltia/sveltia-cms/releases,
+      then regenerate the hash and bump the version here together —
+        node scripts/sri.mjs https://unpkg.com/@sveltia/cms@<version>/dist/sveltia-cms.js
     -->
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+    <script
+      src="https://unpkg.com/@sveltia/cms@0.206.1/dist/sveltia-cms.js"
+      integrity="sha384-xtkktf/PnkYVudN36SQmxuHDpnU7zIXpEgnZ310X63SyQibGWvQ82Q/GSjLtY1Tu"
+      crossorigin="anonymous"
+      type="module"
+    ></script>
   </body>
 </html>
