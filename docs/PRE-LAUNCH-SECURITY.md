@@ -1,6 +1,7 @@
 # Pre‑launch security & abuse review
 
 _Reviewed: 2026‑09‑06 · against commit `8cbbd1a` + the fixes in this change._
+_Addendum 2026‑09‑07: §E — Dependabot advisory triage._
 
 ## TL;DR
 
@@ -78,7 +79,9 @@ Do not start the cutover until that rule is off and the `www → apex` rule is i
   works PR‑by‑PR; this stops an accident or a stray token from writing straight
   to `main`.
 - Repo → **Settings → Code security**: enable **Secret scanning** + **Push
-  protection**, and **Dependabot alerts**.
+  protection**, **Dependabot alerts**, and **Dependabot security updates** (so
+  fixes arrive as PRs — now gated by the `CI` check). Advisory triage is in
+  **§E**.
 - Review **Settings → Developer settings → OAuth apps**: the CMS OAuth app should
   be the only one, with callback URL = the broker Worker only.
 
@@ -113,7 +116,7 @@ Do not start the cutover until that rule is off and the `www → apex` rule is i
 | #   | Item                                                                           | Why it's acceptable                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | C1  | `script-src` uses `'unsafe-inline'` rather than per‑script hashes.             | The site renders no visitor input into HTML and has no auth/cookies, so the XSS vector `'unsafe-inline'` would mitigate does not exist here. Hash‑based CSP across Astro's per‑page hydration snippets is fragile for a non‑developer maintainer. `object-src`, `base-uri`, `frame-ancestors`, `form-action` — the directives that matter here — are strict. Revisit with Astro's `experimental.csp` once the site is stable. |
-| C2  | `npm audit` reports 4 dev‑dependency vulnerabilities (`esbuild`, `sharp`).     | Build‑time only; nothing ships to visitors. The fix needs an Astro major bump. Track separately; not a launch risk.                                                                                                                                                                                                                                                                                                           |
+| C2  | 15 Dependabot advisories in dev/build dependencies and Astro core.             | None are reachable against the deployed static site. Full per‑advisory analysis and the post‑cutover Astro‑major upgrade plan are in **§E**.                                                                                                                                                                                                                                                                                  |
 | C3  | HSTS has no `preload`.                                                         | `preload` is a long, hard‑to‑reverse commitment. Add it a few weeks after cutover once HTTPS is confirmed stable on the apex and all subdomains.                                                                                                                                                                                                                                                                              |
 | C4  | A visitor who strips both `Origin` and `Referer` gets `403` from `/api/embed`. | Very rare (aggressive privacy extensions). Keyword search still works for them; the page degrades cleanly.                                                                                                                                                                                                                                                                                                                    |
 | C5  | The `/admin` CSP includes `'unsafe-eval'` and `'unsafe-inline'`.               | `/admin` is `noindex`, sign‑in gated, and reached only by you. Its script source is still pinned + SRI‑locked to one host. A broken CMS at launch is the worse outcome.                                                                                                                                                                                                                                                       |
@@ -133,3 +136,46 @@ Do not start the cutover until that rule is off and the `www → apex` rule is i
 - [ ] Watch the Pages Functions "Invocations" graph and the WAF rate‑limit
       counter for the first week.
 - [ ] Keep the Google Site live ~7 days as rollback.
+
+---
+
+## E. Dependency advisories (Dependabot) — reviewed 2026‑09‑07
+
+Dependabot opened **15 alerts** against `package-lock.json`. **None are reachable
+against the deployed site.** The site ships as static HTML/CSS/JS on Cloudflare's
+CDN: no server, no SSR, `output` defaults to `'static'`, no adapter. A grep of
+`src/` confirms none of `define:vars`, `transition:*` / `<ClientRouter>`,
+`server:defer`, spread props, or `Astro.request` / Host‑header access are used
+anywhere.
+
+| Alerts                                                                                                                                                                                                  | Package(s)                                   | Class                    | Why it is not reachable here                                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vitest UI arbitrary file read/exec; esbuild dev‑server request forgery + Windows file read; vite `server.fs.deny` bypass + optimized‑deps `.map` path traversal; launch‑editor NTLMv2 hash disclosure   | `vitest`, `esbuild`, `vite`, `launch-editor` | **Dev‑server only**      | Exploitable only while `npm run dev` / `vitest --ui` runs on a maintainer's machine **and** that same browser opens a hostile page. Never deployed; CI runs `vitest run` (no UI). |
+| sharp / libvips — CVE‑2026‑33327, ‑33328, ‑35590, ‑35591                                                                                                                                                | `sharp`                                      | **Build‑time only**      | `sharp` optimises the repo's own images during `astro build`. Not in the shipped output; there is no attacker‑supplied image input.                                               |
+| Host‑header SSRF in prerendered error page; reflected XSS via slot name; `define:vars` `</script>` XSS; View‑Transition / `transition:*` XSS (×2); spread‑attribute‑name XSS (×2); Server‑Island replay | `astro`                                      | **SSR / unused feature** | Each needs on‑demand rendering or a feature this codebase does not contain. Static build, no server for the SSRF/reflected cases to apply to.                                     |
+
+### Upgrade plan (post‑cutover)
+
+The Astro advisories are patched **only in 6.x / 7.x** — there is no 5.x
+backport — so clearing every alert requires an Astro major upgrade.
+`npm audit fix --force` targets **`astro` 7.3.1** (from 5.18.2), which also pulls
+patched `sharp`, `esbuild`, and `vite`.
+
+Do this on one dedicated branch **after** the DNS cutover, never beside it:
+
+1. `astro` 5 → 7, plus matching majors for `@astrojs/mdx`, `@astrojs/preact`,
+   `@astrojs/sitemap`, `@astrojs/check`.
+2. `vitest` 2 → 4 (dev‑only; clears the whole vite/esbuild/launch‑editor chain).
+3. Let `sharp` / `esbuild` resolve to what the new Astro requires; add
+   `package.json` `overrides` only if a stale copy is left behind. Note: adding
+   `overrides` to the **current** tree trips an npm 10.9 bug
+   (`Cannot read properties of null (reading 'edgesOut')`), so the overrides
+   route only works once Astro is bumped first.
+4. Full `npm run build` + `npm run check` + `npm test`, then a manual
+   click‑through of the calculator, the increased‑rest flowchart, search, and a
+   regulation page. Migration risk sits in Content Layer collections, the custom
+   `rehypeWrapTables` plugin in `astro.config.mjs`, and MDX island embedding.
+5. Merge via PR — the required `CI` check gates it.
+
+Until then, enable **Dependabot security updates** (§B4) so fixes land as PRs,
+and keep triaging here rather than leaving alerts unread.
