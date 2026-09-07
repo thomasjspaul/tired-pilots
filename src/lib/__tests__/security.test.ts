@@ -67,8 +67,9 @@ describe('public/admin/index.html', () => {
     expect(html).toContain('crossorigin="anonymous"');
   });
 
-  it('loads the first-party editorial assistant script', () => {
-    expect(html).toContain('<script src="/admin/assistant.js"></script>');
+  it('loads no other scripts (the editorial helper is a separate page, not in /admin)', () => {
+    const scripts = html.match(/<script\b/g) ?? [];
+    expect(scripts.length).toBe(1);
   });
 });
 

@@ -187,41 +187,40 @@ and keep triaging here rather than leaving alerts unread.
 
 ---
 
-## F. Editorial assistant — `/api/review` (added 2026‑09‑07)
+## F. Rewrite helper — `/rewrite` + `/api/rewrite` (updated 2026‑09‑07)
 
-A second Cohere-backed Pages Function powers the CMS "Editorial review" panel
-(`functions/api/review.js`; see `docs/EDITORIAL-ASSISTANT.md`). It sends draft
-page text — and, for regulation pages, the verbatim CARs text — to Cohere
-`/v2/chat` + `/v2/embed` and returns _flags_ for the human editor. It is
-**operator tooling, not visitor-facing**; the visitor privacy statement is
-unchanged.
+A Cohere-backed editor tool that smooths choppy page prose (`functions/api/rewrite.js`;
+see `docs/EDITORIAL-ASSISTANT.md`). It sends pasted Markdown — and, optionally, the
+verbatim CARs text — to Cohere `/v2/chat` + `/v2/embed` and returns a rewritten
+version plus a meaning-match score. **Operator tooling, not visitor-facing**; the
+visitor privacy statement is unchanged. It is a standalone page — **nothing to do
+with `/admin`** (the earlier in-CMS panel that broke the preview pane has been
+removed).
 
 **In code** (mirrors §A3):
 
 - Same-origin guard (`Origin`/`Referer` host allow-list) → `403`.
-- `content-length` cap **32 KB** → `413`; each text field clamped to 16 KB;
-  draft under 40 chars → `400`. Result groups clamped to 25 items / 600 chars.
+- `content-length` cap **40 KB** → `413`; each text field clamped to 20 KB;
+  text under 40 chars → `400`. `checks` clamped to 25 items / 400 chars.
 - No edge cache — `cache-control: no-store`, plus `nosniff` + `noindex`.
 - `env.COHERE_API_KEY` absent → `503` (fork previews degrade cleanly).
-- A Cohere failure returns `chatError: true` with the drift score, **not** a 5xx.
-- The prompt forbids rewriting and forbids certifying accuracy.
+- A chat failure → `502` ("try a smaller chunk"); an embed failure → the rewrite
+  is still returned, just without the score.
+- The prompt's only job is readability — it must not change meaning, numbers,
+  citations, defined terms, or Markdown structure. Nothing is auto-applied.
 
 **Dashboard actions (Thomas):**
 
 1. **Cloudflare Access** — Zero Trust → Access → Applications → **self-hosted
-   application** covering `tiredpilots.ca/admin` **and** `tiredpilots.ca/api/review`.
-   One policy: Action **Allow**, Include **Emails** = your address; session ~1
-   month; identity method One-time PIN is enough. This must be an **identity
-   policy, not a Managed Challenge** (a background `fetch` can't solve a
-   challenge — that is what broke `/admin` earlier; an Access session cookie
-   _is_ sent on background fetches). After enabling, re-verify: `/admin` loads,
-   `config.yml` fetches, the GitHub OAuth popup to `auth.tiredpilots.ca`
-   (different host, not covered) still works, and the review panel still gets a
-   result.
-2. **WAF rate-limit** — `URI Path equals /api/review` → Block 1 min when > **10
+   application** covering `tiredpilots.ca/rewrite` **and** `tiredpilots.ca/api/rewrite`
+   only. **Do NOT add `/admin`** — Access on `/admin` is a separate question with
+   its own risks (the OAuth popup, the background `config.yml` fetch). `/rewrite`
+   has neither, so a plain identity **Allow** policy here is safe: Include
+   **Emails** = your address; session ~1 month; One-time PIN.
+2. **WAF rate-limit** — `URI Path equals /api/rewrite` → Block 1 min when > **8
    req/min** per IP.
-3. **Cohere** — `/v2/chat` costs more per call than `/v2/embed`; keep the ~$5
-   monthly cap and add a 50 % budget alert. Hitting the cap also pauses semantic
-   search (shared key); a separate key is an easy later change.
+3. **Cohere** — a full-section rewrite (`/v2/chat` + `/v2/embed`) is the priciest
+   call in the project (~1–2 ¢). Keep the ~$5 monthly cap and add a 50 % budget
+   alert. Hitting the cap also pauses semantic search (shared key).
 4. Confirm `COHERE_API_KEY` is set for **Production and Preview** (already
    required for search).
