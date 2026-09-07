@@ -1,74 +1,97 @@
 ---
+
 title: What 'acclimatized' means
 question: What does 'acclimatized' mean, and why does it change my maximum FDP?
 slug: acclimatize
 summary: >-
-  Acclimatized means your body clock is aligned with local time. If you're not,
-  you read the FDP tables using the local time back in the zone you're still
-  acclimatized to — which usually shortens the limit.
+Acclimatized means your body clock is aligned with local time. If you're not
+acclimatized to where your FDP begins, you determine the FDP start time using
+the local time at the location where you're still acclimatized — which can
+change your maximum FDP.
 order: 10
 relatedRegulations:
-  - 700-28
-relatedCalculator: fdp
-lawRefs:
-  - '700.28(5)'
-  - '700.28(7)'
-  - '700.01'
-workedExamples:
-  - label: Acclimatized to Calgary, reporting in Toronto
-    scenario: >-
-      You're acclimatized to Mountain time. You report in Toronto (Eastern) at
-      07:00 local. Toronto is two zones east.
-    expected: 'Use the 05:00–05:59 row (07:00 − 2 h), not 07:00–12:59.'
-    citation: AC 700-047 § 4.22
-  - label: Acclimatized to Halifax, reporting in Vancouver
-    scenario: >-
-      You're acclimatized to Atlantic time. You report in Vancouver (Pacific) at
-      07:00 local. Vancouver is four zones west.
-    expected: 'Table start time is 11:00 (07:00 + 4 h) — still the 07:00–12:59 row.'
-    citation: AC 700-047 § 4.22
-lastReviewed: 2026-01-15
-reviewedBy: tiredpilots.ca
-draft: false
-lang: en
+
+* 700-28
+  relatedCalculator: fdp
+  lawRefs:
+* '700.28(5)'
+* '700.28(7)'
+* '700.01'
+  workedExamples:
+* label: Acclimatized to Calgary, reporting in Toronto
+  scenario: >-
+  You're acclimatized to Mountain time. You report in Toronto (Eastern) at
+  07:00 local. Toronto is two time zones east.
+  expected: 'Use a start time of 05:00 (07:00 − 2 h), not 07:00.'
+  citation: AC 700-047 § 4.19(5)(c)
+* label: Acclimatized to Halifax, reporting in Vancouver
+  scenario: >-
+  You're acclimatized to Atlantic time. You report in Vancouver (Pacific) at
+  07:00 local. Vancouver is four time zones west.
+  expected: 'Use a start time of 11:00 (07:00 + 4 h), not 07:00.'
+  citation: AC 700-047 § 4.19(5)(c)
+  lastReviewed: 2026-09-07
+  reviewedBy: tiredpilots.ca
+  draft: false
+  lang: en
+
 ---
 
-**Acclimatized** is defined in [CARs 700.01](/glossary#acclimatized) as a flight
-crew member _"whose biorhythm is aligned with local time"_ — in plain terms, you
-sleep at night and are awake during the day **where you are now**.
+**Acclimatized** is defined in [CARs 700.01](/glossary#acclimatized) as describing
+a flight crew member *"whose biorhythm is aligned with local time."* In practical
+terms, your body clock is aligned with the local day and night where you're
+acclimatized.
 
 ## Why it matters
 
-The [700.28](/rules/700-28) maximum-FDP tables are read using a start time that
-is **the local time at the place you're acclimatized to** — not necessarily the
-wall clock where the flight duty period begins (AC 700-047 §§ 4.22–4.26).
+The [700.28](/rules/700-28) maximum-FDP tables use the start time of your flight
+duty period **at the location where you're acclimatized**. That may not be the
+same as the local time where your FDP actually begins (AC 700-047 § 4.19(5)).
 
-- **Acclimatized** to where the FDP begins → start time is just local time.
-- **Not acclimatized** → convert your report time to the local time back in the
-  zone you're still acclimatized to, and use _that_ row.
+* **Acclimatized** to where the FDP begins → use the local start time.
+* **Not acclimatized** → convert the start time to the local time at the location
+  where you're acclimatized, and use that time in the FDP table.
 
-Because your home-zone equivalent is often earlier in the day (and the early rows
-are the most restrictive), being unacclimatized usually **shortens** your maximum
-FDP.
+That conversion can move your start time into a different row of the FDP table
+and therefore change your maximum FDP. For example, a 07:00 report in Toronto
+while still acclimatized to Calgary is treated as a 05:00 start for the purposes
+of the table.
 
 ## When you count as acclimatized
 
-An operator may assume you're acclimatized to your **home-base** time zone unless
-previous **duty** has acclimatized you elsewhere. Only operating or positioning to
-a new zone — and then spending enough time there — changes it; a there-and-back
-trip the next day does not (AC 700-047 § 4.23).
+An air operator may assume you're acclimatized to your **home-base** time zone
+unless previous duty has acclimatized you to a different time zone. Only duty
+can acclimatize you to another time zone — for example, operating or positioning
+to a new time zone and remaining there long enough to become acclimatized. A
+trip to another time zone followed by a return to your starting location the
+next day does not normally change where you're acclimatized (AC 700-047 § 4.23).
 
-After you leave the zone you're acclimatized to, you become acclimatized to the
-new one once required rest has been given **and** you've spent **72 hours** there
-(time-zone difference under 4 hours) or **96 hours** (difference of 4 hours or
-more). Alternatively, your acclimatized time drifts **1 hour toward the new zone
-for every 24 hours** you spend there (CARs 700.28(5); AC 700-047 §§ 4.24–4.26).
+CARs 700.28(5) provides three ways to determine acclimatization:
+
+* **Less than 4 hours' difference:** you're considered acclimatized after the
+  required rest periods have been provided and you've spent **72 hours** in the
+  same time zone.
+* **4 hours' difference or more:** you're considered acclimatized after the
+  required rest periods have been provided and you've spent **96 hours** in the
+  same time zone.
+* **Daily adjustment:** you may adjust your acclimatized time by **1 hour toward
+  the new time zone for every 24 hours** spent there.
+
+That last method means your acclimatized time can progressively move toward the
+new time zone rather than remaining fixed at your original time zone until the
+72- or 96-hour threshold is reached (CARs 700.28(5); AC 700-047 §§ 4.23–4.26).
+
+For the purposes of these rules, CARs 700.28(7) treats the Canadian time zones as
+**Pacific, Mountain, Central, Eastern and Atlantic**, with the Atlantic time zone
+including Newfoundland and Labrador.
 
 ## A note on other operations
 
-The **medevac** rules (CARs 700.100 series) and **702** aerial-work rules don't
-use acclimatization the way 703/704/705 do — check those subparts directly if
-that's your operation.
+The **medical evacuation flight** rules in the CARs 700.100 series use their own
+flight-time, FDP and rest provisions. Operations under **Subpart 702 (Aerial
+Work)** are also subject to different requirements. If either applies to your
+operation, check the applicable provisions directly rather than assuming the
+700.28 acclimatization rules apply.
 
 See also: [Maximum Flight Duty Period (700.28)](/rules/700-28) ·
 [FDP calculator](/calculator)
