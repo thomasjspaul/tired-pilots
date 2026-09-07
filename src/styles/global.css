@@ -274,6 +274,7 @@ table {
 }
 .fdpc input[type='text'],
 .fdpc input[type='time'],
+.fdpc input[type='date'],
 .fdpc input[type='number'],
 .fdpc select {
   font: inherit;

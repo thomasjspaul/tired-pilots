@@ -29,11 +29,14 @@ function labelForId(id: string): string {
   return ID_TO_LABEL.get(id) ?? `${id.split('/').pop()?.replace(/_/g, ' ')} — ${id}`;
 }
 
+const TODAY = new Date().toISOString().slice(0, 10);
+
 interface State {
   startTime: string;
   acclimatized: boolean;
   accZone: string; // datalist label or IANA name
   fdpZone: string;
+  fdpDate: string; // YYYY-MM-DD, for DST-correct zone offsets
   numFlights: string;
   avgDuration: AvgDurationBucket;
   dayVfr: boolean;
@@ -50,6 +53,7 @@ const DEFAULTS: State = {
   acclimatized: true,
   accZone: HERE,
   fdpZone: HERE,
+  fdpDate: TODAY,
   numFlights: '2',
   avgDuration: 'gte50',
   dayVfr: false,
@@ -68,6 +72,7 @@ function fromQuery(): State {
     acclimatized: g('acc', '1') !== '0',
     accZone: g('az', DEFAULTS.accZone),
     fdpZone: g('fz', DEFAULTS.fdpZone),
+    fdpDate: /^\d{4}-\d{2}-\d{2}$/.test(g('fd', '')) ? g('fd', '') : DEFAULTS.fdpDate,
     numFlights: g('n', DEFAULTS.numFlights),
     avgDuration: (['lt30', '30to50', 'gte50'].includes(g('d', ''))
       ? g('d', '')
@@ -84,19 +89,19 @@ function fromQuery(): State {
   };
 }
 
-/** Report time on today's date, for DST-correct zone offsets. */
-function reportInstant(startTime: string): Date {
+/** The FDP start instant (its date + start time), for DST-correct zone offsets. */
+function reportInstant(dateStr: string, startTime: string): Date {
   const [h, m] = startTime.split(':').map(Number);
-  const d = new Date();
-  d.setHours(h || 0, m || 0, 0, 0);
-  return d;
+  const base = /^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? new Date(`${dateStr}T00:00:00`) : new Date();
+  base.setHours(h || 0, m || 0, 0, 0);
+  return base;
 }
 
 function computedOffsetHours(s: State): number {
   const acc = resolveZone(s.accZone);
   const fdp = resolveZone(s.fdpZone);
   if (!acc || !fdp) return 0;
-  const h = offsetHoursBetween(acc, fdp, reportInstant(s.startTime));
+  const h = offsetHoursBetween(acc, fdp, reportInstant(s.fdpDate, s.startTime));
   return Number.isFinite(h) ? h : 0;
 }
 
@@ -126,6 +131,7 @@ function syncQuery(s: State) {
   if (!s.acclimatized) {
     q.set('az', s.accZone);
     q.set('fz', s.fdpZone);
+    if (s.fdpDate !== TODAY) q.set('fd', s.fdpDate);
   }
   q.set('n', s.numFlights);
   q.set('d', s.avgDuration);
@@ -245,6 +251,15 @@ export default function FdpCalculator() {
               </button>
             </p>
 
+            <label class="fdpc__field">
+              <span>Date of this flight duty period (for daylight-saving)</span>
+              <input
+                type="date"
+                value={s.fdpDate}
+                onInput={(e) => set('fdpDate', (e.target as HTMLInputElement).value)}
+              />
+            </label>
+
             {(() => {
               const acc = resolveZone(s.accZone);
               const fdp = resolveZone(s.fdpZone);
@@ -252,7 +267,7 @@ export default function FdpCalculator() {
                 return (
                   <p class="fdpc__zone-note">Pick both time zones to work out the difference.</p>
                 );
-              const h = offsetHoursBetween(acc, fdp, reportInstant(s.startTime));
+              const h = offsetHoursBetween(acc, fdp, reportInstant(s.fdpDate, s.startTime));
               if (h === 0)
                 return (
                   <p class="fdpc__zone-note">
