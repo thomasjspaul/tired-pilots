@@ -3,3 +3,9 @@ dist/
 public/admin/config.yml
 pnpm-lock.yaml
 package-lock.json
+
+# Content is edited through the CMS and sometimes straight on GitHub — neither
+# runs Prettier. The build (`astro check` + the Zod schema in src/content.config.ts)
+# is what validates these files; Prettier formatting is not worth blocking an
+# edit over. Prose in src/**/*.astro / *.ts is still checked.
+src/content/
