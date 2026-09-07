@@ -7,6 +7,14 @@ name = "tiredpilots-cms-auth"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
+# Serve the broker from a stable domain on the tiredpilots.ca zone. The
+# *.workers.dev subdomain sits behind the account's Cloudflare Access wildcard
+# ("*.thomasjspaul.workers.dev"), which would block GitHub's callback and the
+# CMS popup. `wrangler deploy` creates the DNS record + certificate.
+[[routes]]
+pattern = "auth.tiredpilots.ca"
+custom_domain = true
+
 # Non-secret var. Restrict which sites may use this broker.
 [vars]
 ALLOWED_DOMAINS = "tiredpilots.ca,tired-pilots.pages.dev,*.tired-pilots.pages.dev"

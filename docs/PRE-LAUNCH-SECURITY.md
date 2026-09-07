@@ -102,12 +102,17 @@ Do not start the cutover until that rule is off and the `www → apex` rule is i
 
 - Deploy from `oauth/` with `wrangler deploy`; set `GITHUB_CLIENT_ID` and
   `GITHUB_CLIENT_SECRET` with `wrangler secret put` (never in `wrangler.toml`).
-- Confirm the deployed URL matches `base_url` in `public/admin/config.yml`
-  (`https://tiredpilots-cms-auth.thomasjspaul.workers.dev`).
+- The broker runs on its own custom domain **`https://auth.tiredpilots.ca`**
+  (declared in `oauth/wrangler.toml`), matching `base_url` in
+  `public/admin/config.yml`. The `*.workers.dev` URL is not used — the account's
+  `*.thomasjspaul.workers.dev` Cloudflare Access rule would block the OAuth
+  callback.
+- `https://auth.tiredpilots.ca/` must return the broker's JSON health status,
+  not a redirect to `*.cloudflareaccess.com`.
 - Confirm `ALLOWED_DOMAINS` in `oauth/wrangler.toml` lists only your hosts
   (it currently does).
-- The GitHub OAuth app's **Authorization callback URL** must be the Worker's
-  `/callback`, nothing else.
+- The GitHub OAuth app's **Authorization callback URL** must be
+  `https://auth.tiredpilots.ca/callback`, nothing else.
 
 ---
 
