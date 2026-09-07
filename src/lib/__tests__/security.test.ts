@@ -37,7 +37,8 @@ describe('public/_headers', () => {
     expect(headers).toMatch(/Strict-Transport-Security: max-age=\d+/);
     expect(headers).toContain('X-Frame-Options: DENY');
     expect(headers).toContain('X-Content-Type-Options: nosniff');
-    expect(headers).toContain('Cross-Origin-Opener-Policy: same-origin');
+    // allow-popups, not bare same-origin: the CMS OAuth popup needs window.opener
+    expect(headers).toMatch(/Cross-Origin-Opener-Policy: same-origin-allow-popups/);
   });
 
   it('allows remote scripts only from the analytics beacon and the pinned CMS CDN', () => {

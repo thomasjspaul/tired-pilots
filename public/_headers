@@ -4,17 +4,23 @@
 # a more specific path override it. Two Content-Security-Policy headers would be
 # enforced as their intersection, which breaks /admin. So there is ONE CSP here,
 # wide enough to also cover the Sveltia CMS on /admin (unpkg + GitHub API + the
-# OAuth broker Worker). The CMS is still noindex, sign-in gated, and its script
-# is version-pinned + SRI-locked in /admin/index.html.
+# OAuth broker at auth.tiredpilots.ca). The CMS is still noindex, sign-in gated,
+# and its script is version-pinned + SRI-locked in /admin/index.html.
+#
+# COOP is same-origin-allow-popups, not same-origin: the CMS sign-in opens the
+# OAuth broker in a popup and the broker's callback calls window.opener.postMessage
+# to hand back the token. same-origin would null out window.opener and the popup
+# would hang blank. We don't use crossOriginIsolated / SharedArrayBuffer, so the
+# looser value costs nothing here.
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
-  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://tiredpilots-cms-auth.thomasjspaul.workers.dev; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; frame-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com https://unpkg.com https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com https://auth.tiredpilots.ca; manifest-src 'self'; upgrade-insecure-requests
 
 # The CMS admin shell — keep it out of search and out of the cache.
 /admin/*
