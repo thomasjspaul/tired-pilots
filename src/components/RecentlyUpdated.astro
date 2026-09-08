@@ -36,7 +36,9 @@ const pages = (await getCollection('pages', (e) => isLive(e.data)))
   }));
 
 const rows = [...regs, ...explainers, ...pages]
-  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  // date desc; stable tiebreak on title so same-date entries don't reorder
+  // between builds when unrelated content changes
+  .sort((a, b) => b.date.getTime() - a.date.getTime() || a.title.localeCompare(b.title))
   .slice(0, limit);
 
 const fmt = (d: Date) =>
