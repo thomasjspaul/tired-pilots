@@ -43,13 +43,16 @@ function fmScalar(fm: string, key: string): string | undefined {
   return m[1].trim().replace(/^['"]|['"]$/g, '');
 }
 
-/** Strip inline Markdown so heading text matches what rehype-slug slugs. */
+/**
+ * Strip inline Markdown so heading text matches what rehype-slug slugs.
+ * (No HTML handling: no heading in src/content contains a tag, and a partial
+ * tag-stripping regex trips CodeQL's incomplete-sanitization rule.)
+ */
 function headingText(raw: string): string {
   return raw
     .replace(/`([^`]*)`/g, '$1')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/[*_]{1,3}/g, '')
-    .replace(/<[^>]+>/g, '')
     .trim();
 }
 
