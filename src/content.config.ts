@@ -40,8 +40,6 @@ const reviewable = {
   lang: z.enum(['en', 'fr']).default('en'),
   /** Old Google Sites paths that should 301 to this page. */
   legacyPaths: z.array(z.string()).default([]),
-  /** Map of old `#h.<hash>` anchor id -> new heading id on this page. */
-  legacyAnchors: z.record(z.string(), z.string()).default({}),
 };
 
 /**
